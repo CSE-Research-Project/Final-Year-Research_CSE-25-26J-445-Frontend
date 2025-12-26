@@ -1,23 +1,60 @@
 "use client"
 
 import type React from "react"
-
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { BarChart3, TrendingUp, PieChart, Settings, Menu, X } from "lucide-react"
+import { usePathname, useRouter } from "next/navigation"
+import { BarChart3, TrendingUp, PieChart, Settings, Menu, X, LogOut, User, Newspaper } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useAuthStore } from "@/stores/useAuthStore"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
-const navigation = [
+const protectedNavigation = [
   { name: "Dashboard", href: "/", icon: BarChart3 },
   { name: "Risk Analysis", href: "/risk", icon: PieChart },
-  { name: "Predict open price", href: "/predict", icon: TrendingUp },
+  { name: "Predict", href: "/predict", icon: TrendingUp },
+  { name: "News", href: "/news", icon: Newspaper },
   { name: "Settings", href: "/settings", icon: Settings },
 ]
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
+  const router = useRouter()
+  const { user, isAuthenticated, loading, loadSession, signOut } = useAuthStore()
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    loadSession()
+    setMounted(true)
+  }, [loadSession])
+
+  useEffect(() => {
+    if (!mounted || loading) return
+
+    const isAuthPage = pathname.startsWith("/auth")
+    const isProtectedPage = !pathname.startsWith("/auth")
+
+    if (!isAuthenticated && isProtectedPage) {
+      router.push("/auth/sign-in")
+    } else if (isAuthenticated && isAuthPage) {
+      router.push("/")
+    }
+  }, [isAuthenticated, pathname, router, mounted, loading])
+
+  const handleLogout = () => {
+    signOut()
+    router.push("/auth/sign-in")
+  }
+
+  // Show auth pages without sidebar
+  if (!mounted || loading) {
+    return <>{children}</>
+  }
+
+  if (!isAuthenticated) {
+    return <>{children}</>
+  }
 
   return (
     <div className="flex h-screen bg-background">
@@ -36,7 +73,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <h1 className="text-lg font-bold text-foreground">CSE Platform</h1>
         </div>
         <nav className="px-4 py-4">
-          {navigation.map((item) => {
+          {protectedNavigation.map((item) => {
             const Icon = item.icon
             const isActive = pathname === item.href
             return (
@@ -59,12 +96,44 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top bar */}
         <header className="h-16 border-b border-border bg-card flex items-center justify-between px-6 lg:px-8">
-          <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(!sidebarOpen)} className="lg:hidden">
-            {sidebarOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-          </Button>
-          <div className="flex-1 text-center lg:text-left">
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(!sidebarOpen)} className="lg:hidden">
+              {sidebarOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+            </Button>
             <h2 className="text-sm font-semibold text-muted-foreground">CSE Investment Platform</h2>
           </div>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="rounded-full">
+                <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-semibold">
+                  {user?.displayName.charAt(0).toUpperCase()}
+                </div>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuItem disabled className="flex-col items-start py-2">
+                <p className="text-sm font-semibold">{user?.displayName}</p>
+                <p className="text-xs text-muted-foreground">{user?.email}</p>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/profile" className="cursor-pointer">
+                  <User className="h-4 w-4 mr-2" />
+                  Profile
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/settings" className="cursor-pointer">
+                  <Settings className="h-4 w-4 mr-2" />
+                  Settings
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout}>
+                <LogOut className="h-4 w-4 mr-2" />
+                Logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </header>
 
         {/* Page content */}
