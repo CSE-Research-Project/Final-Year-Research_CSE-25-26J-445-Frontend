@@ -103,25 +103,69 @@ export interface RiskFactor {
   probability: number;
 }
 
+// export interface DividendPredictionResult {
+//   symbol: string;
+//   companyName: string;
+//   lastDividend: number;
+//   lastDividendDate: string;
+//   dividendYield: number;
+//   payoutRatio: number;
+//   historicalDividends: Array<{ year: number; dividend: number; yield: number }>;
+//   prediction: {
+//     nextQuarter: number;
+//     nextYear: number;
+//     growthRate: number;
+//     confidence: number;
+//     exDividendDate: string;
+//     paymentDate: string;
+//   };
+//   forecast: DividendForecast[];
+//   riskFactors: RiskFactor[];
+//   insights: string[];
+// }
+
 export interface DividendPredictionResult {
-  symbol: string;
-  companyName: string;
-  lastDividend: number;
-  lastDividendDate: string;
-  dividendYield: number;
-  payoutRatio: number;
-  historicalDividends: Array<{ year: number; dividend: number; yield: number }>;
-  prediction: {
-    nextQuarter: number;
-    nextYear: number;
-    growthRate: number;
-    confidence: number;
-    exDividendDate: string;
-    paymentDate: string;
+  data: {
+    features: {
+      ROA: { "1": number };
+      asset_turnover: { "1": number };
+      current_ratio: { "1": number };
+      non_current_to_total_assets: { "1": number };
+      ROA_x_leverage: { "1": number };
+      efficiency_score: { "1": number };
+      ROA_lag1: { "1": number };
+      profit_margin_lag1: { "1": number };
+      debt_to_assets_lag1: { "1": number };
+    };
+    prediction: {
+      probability: number;
+      predicted_dividend: number;
+      decision: string;
+      confidence: string;
+      feature_contributions: {
+        contributions: Record<string, number>;
+        intercept: number;
+        top_positive_features: Record<string, number>;
+        top_negative_features: Record<string, number>;
+        explanation: string;
+      };
+      investor_explanation: {
+        summary: string;
+        key_strengths: string[];
+        key_concerns: string[];
+        recommendation: string;
+        risk_assessment: string;
+        confidence_level: string;
+        model_certainty: string;
+      };
+    };
+    financial_possition: {
+      profitability: number;
+      efficiency: number;
+      liquidity: number;
+      leverage: number;
+    };
   };
-  forecast: DividendForecast[];
-  riskFactors: RiskFactor[];
-  insights: string[];
 }
 
 export const searchTickers = async (query: string): Promise<Company[]> => {
@@ -321,10 +365,36 @@ export const newsGetAllTags = async (): Promise<string[]> => {
 export const predictDividend = async (
   symbol: string
 ): Promise<DividendPredictionResult> => {
-  await delay(1000);
-  const data = (dividendData as any)[symbol];
+  const data = await fetchDataFromBackend(symbol);
   if (!data) {
     throw new Error("Dividend data not available for this symbol");
   }
   return data as DividendPredictionResult;
+};
+
+// API function to fetch data from backend
+export const fetchDataFromBackend = async (symbol: string, year: number = 2024): Promise<DividendPredictionResult> => {
+  try {
+    const response = await fetch('http://localhost:8001/data', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        firm: symbol,
+        year: year,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.error('Error fetching data from backend:', error);
+    throw error;
+  }
 };
