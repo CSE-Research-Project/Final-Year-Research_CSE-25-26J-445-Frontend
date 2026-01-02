@@ -25,7 +25,24 @@ export function TickerSearch({ onSelect, placeholder = "Search stocks..." }: Tic
     { symbol: "DIMO", name: "Dimo Holdings Limited", sector: "Auto & Components" },
     { symbol: "ASPI", name: "Asia Pacific Wire & Cable Corporation PLC", sector: "Manufacturing" },
     { symbol: "SLTL", name: "Sri Lanka Telecom Limited", sector: "Telecommunications" },
-    { symbol: "SOFTLOGIC", name: "Softlogic Holdings PLC", sector: "Retail" }
+    { symbol: "SOFTLOGIC", name: "Softlogic Holdings PLC", sector: "Retail" },
+
+    // DIVIDEND STOCKS
+    { symbol: "BALA", name: "Balangoda Plantations PLC", sector: "Plantations" },
+    { symbol: "BFL", name: "Bairaha Farms PLC", sector: "Food & Beverage" },
+    { symbol: "CARG", name: "Cargills (Ceylon) PLC", sector: "Food & Beverage" },
+    { symbol: "CBH", name: "Ceylon Beverage Holdings PLC", sector: "Food & Beverage" },
+    { symbol: "CTC", name: "Ceylon Tobacco Company PLC", sector: "Tobacco" },
+    { symbol: "HVA", name: "HVA Foods PLC", sector: "Food & Beverage" },
+    { symbol: "KFP", name: "Keells Food Products PLC", sector: "Food & Beverage" },
+    { symbol: "MAL", name: "Malwatte Valley Plantations PLC", sector: "Plantations" },
+    { symbol: "RAF", name: "Renuka Agri Foods PLC", sector: "Food & Beverage" },
+    { symbol: "RF", name: "Renuka Foods PLC", sector: "Food & Beverage" },
+    { symbol: "CCS", name: "Ceylon Cold Stores PLC", sector: "Food & Beverage" },
+    { symbol: "SOY", name: "Convenience Foods (Lanka) PLC", sector: "Food & Beverage" },
+    { symbol: "CTEA", name: "Ceylon Tea Services PLC", sector: "Plantations" },
+    { symbol: "TSH", name: "Tea Small Holder Factories PLC", sector: "Plantations" },
+
   ]
 
   useEffect(() => {
