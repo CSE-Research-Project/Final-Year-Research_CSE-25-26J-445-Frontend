@@ -1,0 +1,125 @@
+{
+  "ASPI": {
+    "symbol": "ASPI",
+    "companyName": "AsianPharma Ltd",
+    "lastDividend": 15.5,
+    "lastDividendDate": "2024-08-15",
+    "dividendYield": 3.2,
+    "payoutRatio": 45.5,
+    "historicalDividends": [
+      { "year": 2020, "dividend": 12.0, "yield": 2.8 },
+      { "year": 2021, "dividend": 13.25, "yield": 2.9 },
+      { "year": 2022, "dividend": 14.5, "yield": 3.0 },
+      { "year": 2023, "dividend": 15.0, "yield": 3.1 },
+      { "year": 2024, "dividend": 15.5, "yield": 3.2 }
+    ],
+    "prediction": {
+      "nextQuarter": 4.1,
+      "nextYear": 16.25,
+      "growthRate": 4.8,
+      "confidence": 0.78,
+      "exDividendDate": "2025-02-15",
+      "paymentDate": "2025-03-10"
+    },
+    "forecast": [
+      { "quarter": "Q1 2025", "predictedDividend": 4.1, "probability": 0.78 },
+      { "quarter": "Q2 2025", "predictedDividend": 4.15, "probability": 0.75 },
+      { "quarter": "Q3 2025", "predictedDividend": 4.2, "probability": 0.72 },
+      { "quarter": "Q4 2025", "predictedDividend": 3.8, "probability": 0.7 }
+    ],
+    "riskFactors": [
+      { "factor": "Market Volatility", "impact": "Medium", "probability": 0.65 },
+      { "factor": "Company Performance", "impact": "High", "probability": 0.85 },
+      { "factor": "Economic Downturn", "impact": "High", "probability": 0.45 },
+      { "factor": "Dividend Policy Change", "impact": "Medium", "probability": 0.3 }
+    ],
+    "insights": [
+      "Dividend has grown 29.2% over the last 5 years (CAGR: 6.6%)",
+      "Current payout ratio of 45.5% suggests room for growth",
+      "Q1 dividend expected in February with 78% confidence",
+      "Consistent quarterly performance indicates stable cash flow"
+    ]
+  },
+  "CTHR": {
+    "symbol": "CTHR",
+    "companyName": "CityThere Group",
+    "lastDividend": 8.75,
+    "lastDividendDate": "2024-09-20",
+    "dividendYield": 2.1,
+    "payoutRatio": 38.2,
+    "historicalDividends": [
+      { "year": 2020, "dividend": 6.5, "yield": 1.8 },
+      { "year": 2021, "dividend": 7.1, "yield": 1.9 },
+      { "year": 2022, "dividend": 7.8, "yield": 2.0 },
+      { "year": 2023, "dividend": 8.25, "yield": 2.05 },
+      { "year": 2024, "dividend": 8.75, "yield": 2.1 }
+    ],
+    "prediction": {
+      "nextQuarter": 2.25,
+      "nextYear": 9.15,
+      "growthRate": 4.6,
+      "confidence": 0.81,
+      "exDividendDate": "2025-03-01",
+      "paymentDate": "2025-03-25"
+    },
+    "forecast": [
+      { "quarter": "Q1 2025", "predictedDividend": 2.25, "probability": 0.81 },
+      { "quarter": "Q2 2025", "predictedDividend": 2.28, "probability": 0.79 },
+      { "quarter": "Q3 2025", "predictedDividend": 2.3, "probability": 0.78 },
+      { "quarter": "Q4 2025", "predictedDividend": 2.32, "probability": 0.76 }
+    ],
+    "riskFactors": [
+      { "factor": "Market Volatility", "impact": "Low", "probability": 0.35 },
+      { "factor": "Company Performance", "impact": "High", "probability": 0.9 },
+      { "factor": "Economic Downturn", "impact": "Medium", "probability": 0.55 },
+      { "factor": "Dividend Policy Change", "impact": "Low", "probability": 0.2 }
+    ],
+    "insights": [
+      "Stable dividend growth of 34.6% over 5 years (CAGR: 6.1%)",
+      "Low payout ratio provides strong safety margin",
+      "Quarterly forecast shows consistent growth trajectory",
+      "Strong company fundamentals support dividend sustainability"
+    ]
+  },
+  "UNIF": {
+    "symbol": "UNIF",
+    "companyName": "UniversalFinance PLC",
+    "lastDividend": 22.5,
+    "lastDividendDate": "2024-07-10",
+    "dividendYield": 4.2,
+    "payoutRatio": 62.3,
+    "historicalDividends": [
+      { "year": 2020, "dividend": 18.0, "yield": 3.5 },
+      { "year": 2021, "dividend": 19.5, "yield": 3.8 },
+      { "year": 2022, "dividend": 20.75, "yield": 4.0 },
+      { "year": 2023, "dividend": 21.5, "yield": 4.1 },
+      { "year": 2024, "dividend": 22.5, "yield": 4.2 }
+    ],
+    "prediction": {
+      "nextQuarter": 5.65,
+      "nextYear": 23.5,
+      "growthRate": 4.4,
+      "confidence": 0.74,
+      "exDividendDate": "2025-01-20",
+      "paymentDate": "2025-02-15"
+    },
+    "forecast": [
+      { "quarter": "Q1 2025", "predictedDividend": 5.65, "probability": 0.74 },
+      { "quarter": "Q2 2025", "predictedDividend": 5.7, "probability": 0.71 },
+      { "quarter": "Q3 2025", "predictedDividend": 5.85, "probability": 0.68 },
+      { "quarter": "Q4 2025", "predictedDividend": 6.3, "probability": 0.65 }
+    ],
+    "riskFactors": [
+      { "factor": "Market Volatility", "impact": "High", "probability": 0.72 },
+      { "factor": "Company Performance", "impact": "High", "probability": 0.88 },
+      { "factor": "Economic Downturn", "impact": "High", "probability": 0.6 },
+      { "factor": "Dividend Policy Change", "impact": "Medium", "probability": 0.4 }
+    ],
+    "insights": [
+      "Highest dividend yield among major CSE stocks at 4.2%",
+      "Strong 5-year growth of 25% indicates robust earnings",
+      "High payout ratio (62.3%) reflects income-focused strategy",
+      "Watch for policy changes given market volatility"
+    ]
+  }
+}
