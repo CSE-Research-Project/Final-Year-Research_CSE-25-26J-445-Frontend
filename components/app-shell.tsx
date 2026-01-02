@@ -4,7 +4,7 @@ import type React from "react"
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { BarChart3, TrendingUp, PieChart, Settings, Menu, X, LogOut, User, Newspaper } from "lucide-react"
+import { BarChart3, TrendingUp, PieChart, Settings, Menu, X, LogOut, User, Newspaper, Banknote } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuthStore } from "@/stores/useAuthStore"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
@@ -13,6 +13,7 @@ const protectedNavigation = [
   { name: "Dashboard", href: "/", icon: BarChart3 },
   { name: "Risk Analysis", href: "/risk", icon: PieChart },
   { name: "Predict", href: "/predict", icon: TrendingUp },
+  { name: "Dividend", href: "/dividend", icon: Banknote },
   { name: "News", href: "/news", icon: Newspaper },
   { name: "Settings", href: "/settings", icon: Settings },
 ]

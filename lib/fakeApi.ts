@@ -5,6 +5,7 @@ import riskResultData from "@/data/mock/risk_result.json";
 import predictionResultData from "@/data/mock/prediction_result.json";
 import usersData from "@/data/mock/users.json";
 import newsData from "@/data/mock/news.json";
+import dividendData from "@/data/mock/dividend_prediction.json";
 
 // Simulate network delay
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -90,6 +91,39 @@ export interface NewsArticle {
   content?: string;
 }
 
+export interface DividendForecast {
+  quarter: string;
+  predictedDividend: number;
+  probability: number;
+}
+
+export interface RiskFactor {
+  factor: string;
+  impact: string;
+  probability: number;
+}
+
+export interface DividendPredictionResult {
+  symbol: string;
+  companyName: string;
+  lastDividend: number;
+  lastDividendDate: string;
+  dividendYield: number;
+  payoutRatio: number;
+  historicalDividends: Array<{ year: number; dividend: number; yield: number }>;
+  prediction: {
+    nextQuarter: number;
+    nextYear: number;
+    growthRate: number;
+    confidence: number;
+    exDividendDate: string;
+    paymentDate: string;
+  };
+  forecast: DividendForecast[];
+  riskFactors: RiskFactor[];
+  insights: string[];
+}
+
 export const searchTickers = async (query: string): Promise<Company[]> => {
   await delay(300);
   const q = query.toLowerCase();
@@ -131,8 +165,7 @@ export const predictNextWeekOpen = async (
   return {
     ...predictionResultData,
     symbol,
-    confidence: predictionResultData.confidence as "low" | "medium" | "high",
-  };
+  } as PredictionResult;
 };
 
 // Auth API functions
@@ -283,4 +316,15 @@ export const newsGetAllTags = async (): Promise<string[]> => {
     a.tags.forEach((tag: string) => tags.add(tag));
   });
   return Array.from(tags).sort();
+};
+
+export const predictDividend = async (
+  symbol: string
+): Promise<DividendPredictionResult> => {
+  await delay(1000);
+  const data = (dividendData as any)[symbol];
+  if (!data) {
+    throw new Error("Dividend data not available for this symbol");
+  }
+  return data as DividendPredictionResult;
 };
