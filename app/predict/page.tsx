@@ -1,69 +1,144 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { predictNextWeekOpen, getOhlcvSnapshot, type OhlcvSnapshot } from "@/lib/fakeApi"
-import { usePredictStore } from "@/stores/usePredictStore"
-import { TickerSearch } from "@/components/ticker-search"
-import { ConfidenceBadge } from "@/components/confidence-badge"
-import { ChartCard } from "@/components/chart-card"
-import { ForecastLineChart } from "@/components/forecast-line-chart"
-import { DeltaBarChart } from "@/components/delta-bar-chart"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { useToast } from "@/hooks/use-toast"
-import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts"
+import { useState } from "react";
+import {
+  predictNextWeekOpen,
+  getOhlcvSnapshot,
+  type OhlcvSnapshot,
+} from "@/lib/fakeApi";
+import { usePredictStore } from "@/stores/usePredictStore";
+import { TickerSearch } from "@/components/ticker-search";
+import { ConfidenceBadge } from "@/components/confidence-badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+import {
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  Cell,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+} from "recharts";
+import { TrendingUp, ArrowUpRight, ArrowDownRight } from "lucide-react";
+
+// Mock data generator for historical monthly open prices
+const generateMonthlyOpenPrices = (currentPrice: number) => {
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  return months.map((month, index) => ({
+    month,
+    openPrice: currentPrice + (Math.random() * 200 - 100) + index * 5,
+  }));
+};
 
 export default function PredictPage() {
-  const { inputs, output, loading, setInputs, setOutput, setLoading } = usePredictStore()
-  const [snapshot, setSnapshot] = useState<OhlcvSnapshot | null>(null)
-  const { toast } = useToast()
+  const { inputs, output, loading, setInputs, setOutput, setLoading } =
+    usePredictStore();
+  const [snapshot, setSnapshot] = useState<OhlcvSnapshot | null>(null);
+  const [timeRange, setTimeRange] = useState<string>("12months");
+  const { toast } = useToast();
 
   const handleSearch = (company: any) => {
-    setInputs({ symbol: company.symbol })
-    setSnapshot(null)
-    setOutput(null)
-  }
+    setInputs({ symbol: company.symbol });
+    setSnapshot(null);
+    setOutput(null);
+  };
 
   const handlePredict = async () => {
     if (!inputs.symbol) {
-      toast({ title: "Error", description: "Please select a stock", variant: "destructive" })
-      return
+      toast({
+        title: "Error",
+        description: "Please select a stock",
+        variant: "destructive",
+      });
+      return;
     }
 
-    setLoading(true)
+    setLoading(true);
     try {
       // Get OHLCV snapshot
-      const snap = await getOhlcvSnapshot(inputs.symbol)
-      setSnapshot(snap)
+      const snap = await getOhlcvSnapshot(inputs.symbol);
+      setSnapshot(snap);
 
       // Run prediction
-      const result = await predictNextWeekOpen(inputs.symbol)
-      setOutput(result)
+      const result = await predictNextWeekOpen(inputs.symbol);
+      setOutput(result);
     } catch (error) {
-      toast({ title: "Error", description: "Failed to generate prediction", variant: "destructive" })
+      toast({
+        title: "Error",
+        description: "Failed to generate prediction",
+        variant: "destructive",
+      });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold text-foreground">Next Week Open Price Prediction</h1>
-        <p className="text-muted-foreground">AI-powered forecast for next week's opening prices</p>
+        <h1 className="text-3xl font-bold text-foreground">
+          Next Week Open Price Prediction
+        </h1>
+        <p className="text-muted-foreground">
+          AI-powered forecast for opening price after 5 trading days
+        </p>
       </div>
 
       {/* Input Card */}
       <Card className="bg-card border-border">
         <CardHeader>
           <CardTitle>Prediction Configuration</CardTitle>
-          <CardDescription>Select a stock to generate a prediction</CardDescription>
+          <CardDescription>
+            Select a stock to generate a prediction
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <label className="text-sm font-medium mb-2 block">Stock Selection</label>
-            <TickerSearch onSelect={handleSearch} placeholder="Search for a stock..." />
+            <label className="text-sm font-medium mb-2 block">
+              Stock Selection
+            </label>
+            <TickerSearch
+              onSelect={handleSearch}
+              placeholder="Search for a stock..."
+            />
           </div>
 
           {/* Market Snapshot */}
@@ -73,29 +148,43 @@ export default function PredictPage() {
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
                 <div className="bg-muted/50 p-3 rounded">
                   <p className="text-xs text-muted-foreground">Open</p>
-                  <p className="text-sm font-semibold">{snapshot.open.toFixed(2)}</p>
+                  <p className="text-sm font-semibold">
+                    {snapshot.open.toFixed(2)}
+                  </p>
                 </div>
                 <div className="bg-muted/50 p-3 rounded">
                   <p className="text-xs text-muted-foreground">High</p>
-                  <p className="text-sm font-semibold">{snapshot.high.toFixed(2)}</p>
+                  <p className="text-sm font-semibold">
+                    {snapshot.high.toFixed(2)}
+                  </p>
                 </div>
                 <div className="bg-muted/50 p-3 rounded">
                   <p className="text-xs text-muted-foreground">Low</p>
-                  <p className="text-sm font-semibold">{snapshot.low.toFixed(2)}</p>
+                  <p className="text-sm font-semibold">
+                    {snapshot.low.toFixed(2)}
+                  </p>
                 </div>
                 <div className="bg-muted/50 p-3 rounded">
                   <p className="text-xs text-muted-foreground">Close</p>
-                  <p className="text-sm font-semibold">{snapshot.close.toFixed(2)}</p>
+                  <p className="text-sm font-semibold">
+                    {snapshot.close.toFixed(2)}
+                  </p>
                 </div>
                 <div className="bg-muted/50 p-3 rounded">
                   <p className="text-xs text-muted-foreground">Volume</p>
-                  <p className="text-sm font-semibold">{(snapshot.volume / 1000000).toFixed(1)}M</p>
+                  <p className="text-sm font-semibold">
+                    {(snapshot.volume / 1000000).toFixed(1)}M
+                  </p>
                 </div>
               </div>
             </div>
           )}
 
-          <Button onClick={handlePredict} disabled={!inputs.symbol || loading} className="w-full md:w-auto">
+          <Button
+            onClick={handlePredict}
+            disabled={!inputs.symbol || loading}
+            className="w-full md:w-auto"
+          >
             {loading ? "Generating Prediction..." : "Predict Next Week Open"}
           </Button>
         </CardContent>
@@ -107,93 +196,195 @@ export default function PredictPage() {
           {/* Prediction Summary Card */}
           <Card className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-blue-500/20">
             <CardHeader>
-              <CardTitle className="text-2xl">{output.symbol}</CardTitle>
-              <CardDescription>AI Prediction for Next Week's Opening</CardDescription>
+              <CardTitle className="text-2xl flex items-center gap-2">
+                {output.symbol}
+                <TrendingUp className="h-6 w-6 text-blue-500" />
+              </CardTitle>
+              <CardDescription>
+                AI Prediction for Next Week's Opening (After 5 Trading Days)
+              </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">Today's Open</p>
-                  <p className="text-3xl font-bold text-foreground">{output.openToday.toFixed(2)}</p>
-                  <p className="text-xs text-muted-foreground">LKR</p>
+                <div className="bg-card/50 p-5 rounded-lg border border-border">
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Today's Open Price
+                  </p>
+                  <p className="text-3xl font-bold text-foreground">
+                    {output.openToday.toFixed(2)}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">LKR</p>
                 </div>
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">Predicted Open (Day 5)</p>
-                  <p className="text-3xl font-bold text-green-600">{output.predOpenTplus5.toFixed(2)}</p>
-                  <p className="text-xs text-green-600">
-                    +{(output.predOpenTplus5 - output.openToday).toFixed(2)} (
-                    {(((output.predOpenTplus5 - output.openToday) / output.openToday) * 100).toFixed(2)}%)
+                <div className="bg-gradient-to-br from-green-500/20 to-emerald-500/20 p-5 rounded-lg border border-green-500/30">
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Predicted Open (Day 5)
+                  </p>
+                  <p className="text-3xl font-bold text-green-600 dark:text-green-400">
+                    {output.predOpenTplus5.toFixed(2)}
+                  </p>
+                  <p className="text-sm font-medium text-green-600 dark:text-green-400 mt-2 flex items-center gap-1">
+                    {output.predOpenTplus5 > output.openToday ? (
+                      <ArrowUpRight className="h-4 w-4" />
+                    ) : (
+                      <ArrowDownRight className="h-4 w-4" />
+                    )}
+                    {Math.abs(output.predOpenTplus5 - output.openToday).toFixed(
+                      2
+                    )}{" "}
+                    LKR (
+                    {Math.abs(
+                      ((output.predOpenTplus5 - output.openToday) /
+                        output.openToday) *
+                        100
+                    ).toFixed(2)}
+                    %)
                   </p>
                 </div>
-                <div className="flex items-center justify-center">
+                <div className="bg-card/50 p-5 rounded-lg border border-border flex items-center justify-center">
                   <div className="text-center">
-                    <p className="text-sm text-muted-foreground mb-2">Confidence Level</p>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Confidence Level
+                    </p>
                     <ConfidenceBadge confidence={output.confidence} />
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Based on ML Model
+                    </p>
                   </div>
-                </div>
-              </div>
-
-              {/* Comparison Bar Chart */}
-              <div className="pt-4 space-y-2">
-                <p className="text-sm font-medium">Baseline vs Predicted</p>
-                <div className="h-16 flex items-end gap-4">
-                  <div className="flex-1 bg-blue-500/20 rounded" style={{ height: "40%" }}></div>
-                  <div className="flex-1 bg-green-500/20 rounded" style={{ height: "80%" }}></div>
-                </div>
-                <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>Baseline (Flat)</span>
-                  <span>Predicted Path</span>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* 7-Day Forecast Charts */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <ChartCard title="7-Day Forecast Line Chart" description="Predicted vs Baseline price movements">
-              <ForecastLineChart
-                forecastData={output.forecastPoints}
-                baselineData={output.baselinePoints}
-                title="Next Week Outlook"
-              />
-            </ChartCard>
-
-            <ChartCard title="Price Delta / Change" description="Daily price difference from today">
-              <DeltaBarChart deltaData={output.deltaPoints} />
-            </ChartCard>
-          </div>
-
-          {/* Predicted Path Sparkline */}
+          {/* Today vs Next Week Comparison Chart */}
           <Card className="bg-card border-border">
             <CardHeader>
-              <CardTitle className="text-lg">Trend Indicator</CardTitle>
-              <CardDescription>Predicted price movement over 7 days</CardDescription>
+              <CardTitle>Price Comparison</CardTitle>
+              <CardDescription>
+                Today's open price vs. predicted next week's open price
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-32 w-full">
+              <div className="h-80">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={output.forecastPoints} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="var(--color-muted)" />
-                    <XAxis
-                      dataKey="day"
-                      stroke="var(--color-muted-foreground)"
-                      label={{ value: "Day", position: "insideBottomRight", offset: -5 }}
+                  <BarChart
+                    data={[
+                      { label: "Today's Open", value: output.openToday },
+                      {
+                        label: "Next Week Predicted",
+                        value: output.predOpenTplus5,
+                      },
+                    ]}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+                  >
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke="var(--color-muted)"
                     />
-                    <YAxis stroke="var(--color-muted-foreground)" hide />
+                    <XAxis
+                      dataKey="label"
+                      stroke="var(--color-muted-foreground)"
+                      tick={{ fontSize: 12 }}
+                    />
+                    <YAxis
+                      stroke="var(--color-muted-foreground)"
+                      label={{
+                        value: "Price (LKR)",
+                        angle: -90,
+                        position: "insideLeft",
+                      }}
+                    />
                     <Tooltip
                       contentStyle={{
                         backgroundColor: "var(--color-card)",
                         border: "1px solid var(--color-border)",
                       }}
-                      formatter={(value: number) => `LKR ${value.toFixed(2)}`}
+                      formatter={(value: number) => [
+                        `LKR ${value.toFixed(2)}`,
+                        "Price",
+                      ]}
                     />
+                    <Bar dataKey="value" radius={[8, 8, 0, 0]}>
+                      <Cell fill="#3b82f6" />
+                      <Cell fill="#22c55e" />
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Monthly Open Price Trend */}
+          <Card className="bg-card border-border">
+            <CardHeader>
+              <CardTitle>Historical Open Price Trend</CardTitle>
+              <CardDescription>
+                Monthly open price changes over time
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Time Range Selector */}
+              <div>
+                <label className="text-sm font-medium mb-2 block">
+                  Time Period
+                </label>
+                <Select value={timeRange} onValueChange={setTimeRange}>
+                  <SelectTrigger className="w-full md:w-64">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="6months">Last 6 Months</SelectItem>
+                    <SelectItem value="12months">Last 12 Months</SelectItem>
+                    <SelectItem value="24months">Last 24 Months</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Line Chart */}
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart
+                    data={generateMonthlyOpenPrices(output.openToday)}
+                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                  >
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke="var(--color-muted)"
+                    />
+                    <XAxis
+                      dataKey="month"
+                      stroke="var(--color-muted-foreground)"
+                      label={{
+                        value: "Month",
+                        position: "insideBottom",
+                        offset: -5,
+                      }}
+                    />
+                    <YAxis
+                      stroke="var(--color-muted-foreground)"
+                      label={{
+                        value: "Open Price (LKR)",
+                        angle: -90,
+                        position: "insideLeft",
+                      }}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "var(--color-card)",
+                        border: "1px solid var(--color-border)",
+                      }}
+                      formatter={(value: number) => [
+                        `LKR ${value.toFixed(2)}`,
+                        "Open Price",
+                      ]}
+                    />
+                    <Legend />
                     <Line
                       type="monotone"
-                      dataKey="price"
-                      stroke="#22c55e"
-                      strokeWidth={3}
-                      dot={{ r: 5 }}
-                      isAnimationActive={true}
+                      dataKey="openPrice"
+                      stroke="#3b82f6"
+                      strokeWidth={2}
+                      dot={{ r: 4 }}
+                      name="Open Price"
                     />
                   </LineChart>
                 </ResponsiveContainer>
@@ -201,85 +392,172 @@ export default function PredictPage() {
             </CardContent>
           </Card>
 
+          {/* Prediction Details */}
+          <Card className="bg-card border-border">
+            <CardHeader>
+              <CardTitle>Prediction Details</CardTitle>
+              <CardDescription>
+                Forecast for opening price after 5 trading days
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="bg-muted/50 p-4 rounded-lg">
+                  <p className="text-xs text-muted-foreground mb-1">
+                    Current Date
+                  </p>
+                  <p className="text-sm font-semibold">{output.asofDate}</p>
+                </div>
+                <div className="bg-muted/50 p-4 rounded-lg">
+                  <p className="text-xs text-muted-foreground mb-1">
+                    Trading Days
+                  </p>
+                  <p className="text-sm font-semibold">5 Days</p>
+                </div>
+                <div className="bg-muted/50 p-4 rounded-lg">
+                  <p className="text-xs text-muted-foreground mb-1">
+                    Price Change
+                  </p>
+                  <p
+                    className={`text-sm font-semibold ${
+                      output.predOpenTplus5 > output.openToday
+                        ? "text-green-600 dark:text-green-400"
+                        : "text-red-600 dark:text-red-400"
+                    }`}
+                  >
+                    {output.predOpenTplus5 > output.openToday ? "+" : ""}
+                    {(output.predOpenTplus5 - output.openToday).toFixed(2)} LKR
+                  </p>
+                </div>
+                <div className="bg-muted/50 p-4 rounded-lg">
+                  <p className="text-xs text-muted-foreground mb-1">
+                    Percentage Change
+                  </p>
+                  <p
+                    className={`text-sm font-semibold ${
+                      output.predOpenTplus5 > output.openToday
+                        ? "text-green-600 dark:text-green-400"
+                        : "text-red-600 dark:text-red-400"
+                    }`}
+                  >
+                    {output.predOpenTplus5 > output.openToday ? "+" : ""}
+                    {(
+                      ((output.predOpenTplus5 - output.openToday) /
+                        output.openToday) *
+                      100
+                    ).toFixed(2)}
+                    %
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* How This Works */}
           <Card className="bg-card border-border">
             <CardHeader>
-              <CardTitle className="text-lg">"How This Works" Section</CardTitle>
+              <CardTitle className="text-lg">How This Works</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <p className="text-sm text-muted-foreground">
-                  This prediction model uses machine learning trained on historical CSE stock data. It analyzes patterns
-                  in opening prices, trading volume, volatility, and market returns to forecast the most likely opening
-                  price for the next trading week.
+                  This prediction model uses machine learning trained on
+                  historical CSE stock data. It analyzes patterns in opening
+                  prices, trading volume, volatility, and market returns to
+                  forecast the most likely opening price after 5 trading days
+                  (next week).
                 </p>
                 <p className="text-sm font-medium text-amber-600 dark:text-amber-400">
-                  <strong>Important Disclaimer:</strong> This is NOT financial advice. Predictions are based on
-                  historical patterns and may not reflect future market conditions. CSE data is delayed. Always consult
-                  with a qualified financial advisor before making investment decisions.
+                  <strong>Important Disclaimer:</strong> This is NOT financial
+                  advice. Predictions are based on historical patterns and may
+                  not reflect future market conditions. CSE data is delayed.
+                  Always consult with a qualified financial advisor before
+                  making investment decisions.
                 </p>
               </div>
 
               <Accordion type="single" collapsible>
                 <AccordionItem value="features">
-                  <AccordionTrigger>Model Features (Collapsible)</AccordionTrigger>
+                  <AccordionTrigger>
+                    Model Features (Collapsible)
+                  </AccordionTrigger>
                   <AccordionContent>
                     <div className="space-y-2 text-sm">
-                      <p className="font-medium">The model uses the following features:</p>
+                      <p className="font-medium">
+                        The model uses the following features:
+                      </p>
                       <ul className="grid grid-cols-2 gap-2 text-muted-foreground">
                         <li className="flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>open_price
+                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                          open_price
                         </li>
                         <li className="flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>high_price
+                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                          high_price
                         </li>
                         <li className="flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>low_price
+                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                          low_price
                         </li>
                         <li className="flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>close_price
+                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                          close_price
                         </li>
                         <li className="flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>prev_close
+                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                          prev_close
                         </li>
                         <li className="flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>share_volume
+                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                          share_volume
                         </li>
                         <li className="flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>ret_1
+                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                          ret_1
                         </li>
                         <li className="flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>gap_1
+                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                          gap_1
                         </li>
                         <li className="flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>co_ret
+                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                          co_ret
                         </li>
                         <li className="flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>hl_pct
+                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                          hl_pct
                         </li>
                         <li className="flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>log_vol
+                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                          log_vol
                         </li>
                         <li className="flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>ret_mean_5
+                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                          ret_mean_5
                         </li>
                         <li className="flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>ret_std_5
+                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                          ret_std_5
                         </li>
                         <li className="flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>ret_mean_20
+                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                          ret_mean_20
                         </li>
                         <li className="flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>ret_std_20
+                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                          ret_std_20
                         </li>
                         <li className="flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>vol_mean_20
+                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                          vol_mean_20
                         </li>
                         <li className="flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>vol_std_20
+                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                          vol_std_20
                         </li>
                         <li className="flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>dow
+                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                          dow
                         </li>
                       </ul>
                     </div>
@@ -296,11 +574,12 @@ export default function PredictPage() {
         <Card className="bg-muted/30 border-dashed">
           <CardContent className="pt-12 pb-12 text-center">
             <p className="text-muted-foreground">
-              Select a stock and click "Predict Next Week Open" to see the forecast
+              Select a stock and click "Predict Next Week Open" to see the
+              forecast
             </p>
           </CardContent>
         </Card>
       )}
     </div>
-  )
+  );
 }
