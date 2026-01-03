@@ -3,84 +3,155 @@
 import { useState } from "react"
 import { runRiskAnalysis, getOhlcvSnapshot, type OhlcvSnapshot } from "@/lib/fakeApi"
 import { useRiskStore } from "@/stores/useRiskStore"
+import { useFinancialHealth } from "@/hooks/use-financial-health"
+import { useCompanyHealthHistory } from "@/hooks/use-company-health-history"
+import { useReportHealthCheck } from "@/hooks/use-report-health-check"
 import { TickerSearch } from "@/components/ticker-search"
 import { KpiCard } from "@/components/kpi-card"
 import { ChartCard } from "@/components/chart-card"
+import { MetricsChart } from "@/components/metrics-chart"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { Badge } from "@/components/ui/badge"
+import { Skeleton } from "@/components/ui/skeleton"
 import { useToast } from "@/hooks/use-toast"
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts"
-import { Building2, TrendingUp, TrendingDown, Activity } from "lucide-react"
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Cell } from "recharts"
+import { Building2, TrendingUp, TrendingDown, Activity, AlertTriangle, CheckCircle, FileText, ExternalLink, Lightbulb, Target, ArrowUpRight, ArrowDownRight, Shield, Gauge, Info, ClipboardList } from "lucide-react"
 
-// Mock data generator for financial ratios
-const generateFinancialData = (years: number[]) => {
-  return years.map(year => ({
-    year: year.toString(),
-    workingCapital: Math.random() * 500000 + 200000,
-    netProfit: Math.random() * 300000 + 100000,
-    margin: Math.random() * 30 + 10,
-    workingCapitalRatio: Math.random() * 2 + 1,
-    currentRatio: Math.random() * 2.5 + 1
-  }))
-}
-
-// Mock company info generator
-const getMockCompanyInfo = (symbol: string) => {
-  const companies: Record<string, any> = {
-    "ASPI": { name: "Asia Pacific Wire & Cable Corporation PLC", industry: "Manufacturing", marketCap: "LKR 1.8B", employees: "850", founded: "1998" },
-    "DIMO": { name: "Dimo Holdings Limited", industry: "Auto & Components", marketCap: "LKR 3.2B", employees: "1,500", founded: "1993" },
-    "DIALOG": { name: "Dialog Axiata PLC", industry: "Telecommunications", marketCap: "LKR 125B", employees: "3,200", founded: "1995" },
-    "SLTL": { name: "Sri Lanka Telecom Limited", industry: "Telecommunications", marketCap: "LKR 45B", employees: "2,100", founded: "1991" },
-    "COMB": { name: "Colombo Commercial Warehousing Company PLC", industry: "Trading", marketCap: "LKR 2.1B", employees: "650", founded: "2000" },
-    "MTL": { name: "Melstacorp Limited", industry: "Manufacturing", marketCap: "LKR 8.5B", employees: "2,800", founded: "1990" },
-    "CARSONS": { name: "Carsons Cumberbatch PLC", industry: "Trading", marketCap: "LKR 15B", employees: "4,500", founded: "1844" },
-    "SOFTLOGIC": { name: "Softlogic Holdings PLC", industry: "Retail", marketCap: "LKR 12B", employees: "3,800", founded: "1991" }
-  }
-  return companies[symbol] || { name: symbol, industry: "Technology", marketCap: "LKR 2.5B", employees: "1,250", founded: "2008" }
-}
-
-// Mock 3-month health forecast generator
-const getMockHealthForecast = () => {
-  const statuses = ["Excellent", "Healthy", "Good", "Fair"]
-  const trends = ["positive", "negative"]
-  return {
-    status: statuses[Math.floor(Math.random() * 2)], // Mostly positive
-    trend: trends[Math.floor(Math.random() * trends.length)],
-    confidence: Math.floor(Math.random() * 15) + 75 // 75-90%
+// Helper function to get zone color
+const getZoneColor = (zone: string) => {
+  switch (zone) {
+    case 'Safe':
+      return 'bg-green-500/20 text-green-600 dark:text-green-400 border-green-500/30'
+    case 'Grey':
+      return 'bg-yellow-500/20 text-yellow-600 dark:text-yellow-400 border-yellow-500/30'
+    case 'Distress':
+      return 'bg-red-500/20 text-red-600 dark:text-red-400 border-red-500/30'
+    default:
+      return 'bg-muted text-muted-foreground'
   }
 }
+
+// Helper function to get zone icon
+const getZoneIcon = (zone: string) => {
+  switch (zone) {
+    case 'Safe':
+      return <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
+    case 'Grey':
+      return <AlertTriangle className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
+    case 'Distress':
+      return <AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400" />
+    default:
+      return null
+  }
+}
+
+// Helper function to get health check status color
+const getHealthStatusColor = (status: string) => {
+  switch (status) {
+    case 'Excellent':
+      return 'bg-green-500/20 text-green-600 dark:text-green-400 border-green-500/30'
+    case 'Good':
+      return 'bg-blue-500/20 text-blue-600 dark:text-blue-400 border-blue-500/30'
+    case 'Average':
+      return 'bg-yellow-500/20 text-yellow-600 dark:text-yellow-400 border-yellow-500/30'
+    case 'Poor':
+      return 'bg-orange-500/20 text-orange-600 dark:text-orange-400 border-orange-500/30'
+    case 'Critical':
+      return 'bg-red-500/20 text-red-600 dark:text-red-400 border-red-500/30'
+    default:
+      return 'bg-muted text-muted-foreground'
+  }
+}
+
+// Helper function to get score ring color
+const getScoreColor = (score: number) => {
+  if (score >= 90) return '#22c55e' // green
+  if (score >= 70) return '#3b82f6' // blue
+  if (score >= 50) return '#f59e0b' // amber
+  if (score >= 30) return '#f97316' // orange
+  return '#ef4444' // red
+}
+
+// Helper to format percentage
+const formatPercentage = (value: number) => `${(value * 100).toFixed(2)}%`
+
+// Helper to format decimal
+const formatDecimal = (value: number) => value.toFixed(4)
 
 export default function RiskAnalysisPage() {
   const { inputs, results, loading, setInputs, setResults, setLoading } = useRiskStore()
   const [snapshot, setSnapshot] = useState<OhlcvSnapshot | null>(null)
-  const [selectedRatio, setSelectedRatio] = useState<string>("workingCapital")
-  const [yearRange, setYearRange] = useState<string>("2020-2025")
-  const [showFinancialHealth, setShowFinancialHealth] = useState(false)
-  const [companyInfo, setCompanyInfo] = useState<any>(null)
-  const [healthForecast, setHealthForecast] = useState<any>(null)
+  const [symbolInput, setSymbolInput] = useState<string>("")
   const { toast } = useToast()
 
-  // Generate financial data based on selected year range
-  const getYearsFromRange = (range: string) => {
-    const [start, end] = range.split("-").map(Number)
-    const years = []
-    for (let i = start; i <= end; i++) {
-      years.push(i)
+  // Use the financial health hook
+  const {
+    data: financialHealthData,
+    loading: financialHealthLoading,
+    error: financialHealthError,
+    fetchAnalysis,
+    reset: resetFinancialHealth
+  } = useFinancialHealth()
+
+  // Use the company health history hook
+  const {
+    chartData: historyChartData,
+    loading: historyLoading,
+    error: historyError,
+    fetchHistory,
+    reset: resetHistory
+  } = useCompanyHealthHistory()
+
+  // Use the report health check hook
+  const {
+    data: healthCheckData,
+    loading: healthCheckLoading,
+    error: healthCheckError,
+    fetchHealthCheck,
+    reset: resetHealthCheck
+  } = useReportHealthCheck()
+
+  // Handle manual symbol input and API call
+  const handleSymbolAnalyze = async () => {
+    if (!symbolInput.trim()) {
+      toast({ title: "Error", description: "Please enter a stock symbol", variant: "destructive" })
+      return
     }
-    return years
-  }
 
-  const financialData = generateFinancialData(getYearsFromRange(yearRange))
-
-  const handleSearch = (company: any) => {
-    setInputs({ ...inputs, symbol: company.symbol })
+    setInputs({ ...inputs, symbol: symbolInput.trim() })
     setSnapshot(null)
     setResults(null)
-    setShowFinancialHealth(true)
-    setCompanyInfo(getMockCompanyInfo(company.symbol))
-    setHealthForecast(getMockHealthForecast())
+
+    // Fetch financial health data, history, and health check from the API
+    await Promise.all([
+      fetchAnalysis(symbolInput.trim()),
+      fetchHistory(symbolInput.trim()),
+      fetchHealthCheck(symbolInput.trim())
+    ])
+  }
+
+  // Handle enter key press
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSymbolAnalyze()
+    }
+  }
+
+  const handleSearch = async (company: any) => {
+    setInputs({ ...inputs, symbol: company.symbol })
+    setSymbolInput(company.symbol)
+    setSnapshot(null)
+    setResults(null)
+
+    // Fetch financial health data, history, and health check from the API
+    await Promise.all([
+      fetchAnalysis(company.symbol),
+      fetchHistory(company.symbol),
+      fetchHealthCheck(company.symbol)
+    ])
   }
 
   const handleAnalyze = async () => {
@@ -105,26 +176,17 @@ export default function RiskAnalysisPage() {
     }
   }
 
-  const getRatioLabel = (ratio: string) => {
-    const labels: Record<string, string> = {
-      workingCapital: "Working Capital",
-      netProfit: "Net Profit",
-      margin: "Margin (%)",
-      workingCapitalRatio: "Working Capital Ratio",
-      currentRatio: "Current Ratio"
-    }
-    return labels[ratio] || ratio
-  }
-
-  const getHealthScore = () => {
-    // Mock calculation - score out of 6
-    return 4.5
-  }
-
-  const getHealthScoreColor = (score: number) => {
-    if (score >= 5) return "text-green-600 dark:text-green-400"
-    if (score >= 3.5) return "text-yellow-600 dark:text-yellow-400"
-    return "text-red-600 dark:text-red-400"
+  // Prepare feature impact chart data
+  const getFeatureImpactChartData = () => {
+    if (!financialHealthData?.explanation?.featureImpacts) return []
+    return financialHealthData.explanation.featureImpacts.map(item => ({
+      name: item.displayName.length > 20 ? item.displayName.substring(0, 20) + '...' : item.displayName,
+      fullName: item.displayName,
+      impact: item.impact,
+      value: item.value,
+      direction: item.direction,
+      context: item.thresholdContext
+    }))
   }
 
   return (
@@ -138,22 +200,69 @@ export default function RiskAnalysisPage() {
       <Card className="bg-card border-border">
         <CardHeader>
           <CardTitle>Analysis Configuration</CardTitle>
-          <CardDescription>Select a stock and configure your risk analysis</CardDescription>
+          <CardDescription>Enter a CSE stock symbol to analyze its financial health</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* Manual Symbol Input */}
           <div>
-            <label className="text-sm font-medium mb-2 block">Stock Selection</label>
-            <TickerSearch onSelect={handleSearch} placeholder="Search for a company..." />
+            <label className="text-sm font-medium mb-2 block">Stock Symbol</label>
+            <div className="flex gap-2">
+              <Input
+                value={symbolInput}
+                onChange={(e) => setSymbolInput(e.target.value.toUpperCase())}
+                onKeyPress={handleKeyPress}
+                placeholder="Enter symbol (e.g., ALUM.N0000)"
+                className="flex-1"
+              />
+              <Button
+                onClick={handleSymbolAnalyze}
+                disabled={!symbolInput.trim() || financialHealthLoading}
+                className="px-6"
+              >
+                {financialHealthLoading ? "Analyzing..." : "Analyze"}
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground mt-2">
+              Enter the full CSE symbol including the suffix (e.g., ALUM.N0000, JKH.N0000)
+            </p>
           </div>
-
-          <Button onClick={handleAnalyze} disabled={!inputs.symbol || loading} className="w-full md:w-auto">
-            {loading ? "Running Analysis..." : "Run Risk Analysis"}
-          </Button>
         </CardContent>
       </Card>
 
-      {/* Company Financial Health - Show after search */}
-      {showFinancialHealth && inputs.symbol && (
+      {/* Financial Health Loading State */}
+      {financialHealthLoading && (
+        <Card className="bg-card border-border">
+          <CardHeader>
+            <Skeleton className="h-6 w-48" />
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[...Array(4)].map((_, i) => (
+                <div key={i}>
+                  <Skeleton className="h-4 w-24 mb-2" />
+                  <Skeleton className="h-6 w-32" />
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Financial Health Error State */}
+      {financialHealthError && (
+        <Card className="bg-red-500/10 border-red-500/30">
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-2 text-red-600 dark:text-red-400">
+              <AlertTriangle className="h-5 w-5" />
+              <p className="font-medium">Error loading financial health data</p>
+            </div>
+            <p className="text-sm text-muted-foreground mt-2">{financialHealthError}</p>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Financial Health Data Display */}
+      {financialHealthData && !financialHealthLoading && (
         <>
           {/* Company Basic Info */}
           <Card className="bg-card border-border">
@@ -164,64 +273,306 @@ export default function RiskAnalysisPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div>
-                  <p className="text-xs text-muted-foreground">Name</p>
-                  <p className="text-sm font-semibold">{companyInfo?.name}</p>
+                  <p className="text-xs text-muted-foreground">Company Name</p>
+                  <p className="text-sm font-semibold">{financialHealthData.extractedData.company_name}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">Industry</p>
-                  <p className="text-sm font-semibold">{companyInfo?.industry}</p>
+                  <p className="text-xs text-muted-foreground">Symbol</p>
+                  <p className="text-sm font-semibold">{financialHealthData.symbol}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">Market Cap</p>
-                  <p className="text-sm font-semibold">{companyInfo?.marketCap}</p>
+                  <p className="text-xs text-muted-foreground">Report Period</p>
+                  <p className="text-sm font-semibold">{financialHealthData.extractedData.report_period}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">Employees</p>
-                  <p className="text-sm font-semibold">{companyInfo?.employees}</p>
+                  <p className="text-xs text-muted-foreground">Currency</p>
+                  <p className="text-sm font-semibold">{financialHealthData.extractedData.currency}</p>
                 </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">Founded</p>
-                  <p className="text-sm font-semibold">{companyInfo?.founded}</p>
-                </div>
+              </div>
+              {/* Report Link */}
+              <div className="mt-4 pt-4 border-t">
+                <a
+                  href={financialHealthData.reportInfo.downloadUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                >
+                  <FileText className="h-4 w-4" />
+                  View Financial Report ({financialHealthData.reportInfo.reportDate})
+                  <ExternalLink className="h-3 w-3" />
+                </a>
               </div>
             </CardContent>
           </Card>
 
-          {/* Financial Health Forecast */}
-          <Card className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 border-blue-500/20">
+          {/* Z-Score & Risk Assessment */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Current Z-Score */}
+            <Card className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 border-blue-500/20">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Activity className="h-5 w-5" />
+                  Current Z-Score
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-4">
+                  <p className="text-5xl font-bold">{financialHealthData.extractedData.ratios.z_score.toFixed(4)}</p>
+                  <div className="mt-4 flex justify-center">
+                    <Badge className={`${getZoneColor(financialHealthData.riskAssessment.zone)} px-4 py-1 text-sm font-medium`}>
+                      {getZoneIcon(financialHealthData.riskAssessment.zone)}
+                      <span className="ml-2">{financialHealthData.riskAssessment.zone} Zone</span>
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-3">{financialHealthData.riskAssessment.description}</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Predicted Z-Score */}
+            <Card className="bg-gradient-to-br from-green-500/10 to-teal-500/10 border-green-500/20">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5" />
+                  Next Quarter Prediction
+                </CardTitle>
+                <CardDescription>Predicted by {financialHealthData.prediction.model_name} model</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-4">
+                  <p className="text-5xl font-bold">{financialHealthData.prediction.z_score_next_quarter.toFixed(4)}</p>
+                  <div className="mt-4 flex items-center justify-center gap-2">
+                    {financialHealthData.prediction.z_score_next_quarter > financialHealthData.extractedData.ratios.z_score ? (
+                      <TrendingUp className="h-5 w-5 text-green-600 dark:text-green-400" />
+                    ) : (
+                      <TrendingDown className="h-5 w-5 text-red-600 dark:text-red-400" />
+                    )}
+                    <span className={`text-sm font-medium ${financialHealthData.prediction.z_score_next_quarter > financialHealthData.extractedData.ratios.z_score
+                      ? 'text-green-600 dark:text-green-400'
+                      : 'text-red-600 dark:text-red-400'
+                      }`}>
+                      {((financialHealthData.prediction.z_score_next_quarter - financialHealthData.extractedData.ratios.z_score) / financialHealthData.extractedData.ratios.z_score * 100).toFixed(2)}% change expected
+                    </span>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Prediction timestamp: {new Date(financialHealthData.prediction.timestamp).toLocaleString()}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* AI Explanation Summary */}
+          <Card className="bg-card border-border">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Activity className="h-5 w-5" />
-                Company Next 3 Month Financial Health
+                <Lightbulb className="h-5 w-5 text-yellow-500" />
+                AI Analysis Summary
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center gap-4">
-                <div className="flex-1">
-                  <p className="text-2xl font-bold flex items-center gap-2">
-                    {healthForecast?.status}
-                    {healthForecast?.trend === "positive" ? (
-                      <TrendingUp className="h-6 w-6 text-green-600 dark:text-green-400" />
-                    ) : (
-                      <TrendingDown className="h-6 w-6 text-red-600 dark:text-red-400" />
-                    )}
-                  </p>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Confidence: {healthForecast?.confidence}%
-                  </p>
+              <p className="text-sm leading-relaxed">{financialHealthData.explanation.summary}</p>
+            </CardContent>
+          </Card>
+
+          {/* Key Drivers */}
+          <Card className="bg-card border-border">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Target className="h-5 w-5" />
+                Key Drivers
+              </CardTitle>
+              <CardDescription>Primary factors influencing the Z-Score</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-3">
+                {financialHealthData.explanation.keyDrivers.map((driver, index) => (
+                  <li key={index} className="flex items-start gap-3">
+                    <span className="flex-shrink-0 w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-medium">
+                      {index + 1}
+                    </span>
+                    <p className="text-sm text-muted-foreground">{driver}</p>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+
+          {/* Feature Impacts Chart */}
+          <Card className="bg-card border-border">
+            <CardHeader>
+              <CardTitle>Feature Impact Analysis</CardTitle>
+              <CardDescription>How each financial metric contributes to the Z-Score prediction</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={getFeatureImpactChartData()}
+                    layout="vertical"
+                    margin={{ top: 5, right: 30, left: 120, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--color-muted)" />
+                    <XAxis type="number" stroke="var(--color-muted-foreground)" />
+                    <YAxis type="category" dataKey="name" stroke="var(--color-muted-foreground)" width={110} tick={{ fontSize: 11 }} />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "var(--color-card)",
+                        border: "1px solid var(--color-border)",
+                      }}
+                      formatter={(value: number, name: string, props: any) => [
+                        `Impact: ${value.toFixed(4)}`,
+                        props.payload.fullName
+                      ]}
+                    />
+                    <Bar dataKey="impact" radius={[0, 4, 4, 0]}>
+                      {getFeatureImpactChartData().map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.direction === 'positive' ? '#22c55e' : '#ef4444'} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Positive & Negative Factors */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Positive Factors */}
+            <Card className="bg-green-500/5 border-green-500/20">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-green-600 dark:text-green-400">
+                  <ArrowUpRight className="h-5 w-5" />
+                  Positive Factors
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {financialHealthData.explanation.topPositiveFactors.length > 0 ? (
+                  <ul className="space-y-3">
+                    {financialHealthData.explanation.topPositiveFactors.map((factor, index) => (
+                      <li key={index} className="p-3 bg-green-500/10 rounded-lg">
+                        <div className="flex justify-between items-start">
+                          <p className="text-sm font-medium">{factor.feature}</p>
+                          <Badge variant="outline" className="text-green-600 dark:text-green-400 border-green-500/30">
+                            +{factor.impact.toFixed(4)}
+                          </Badge>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">Value: {factor.value.toFixed(4)}</p>
+                        <p className="text-xs text-muted-foreground">{factor.context}</p>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-sm text-muted-foreground">No significant positive factors identified.</p>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Negative Factors */}
+            <Card className="bg-red-500/5 border-red-500/20">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-red-600 dark:text-red-400">
+                  <ArrowDownRight className="h-5 w-5" />
+                  Negative Factors
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-3">
+                  {financialHealthData.explanation.topNegativeFactors.map((factor, index) => (
+                    <li key={index} className="p-3 bg-red-500/10 rounded-lg">
+                      <div className="flex justify-between items-start">
+                        <p className="text-sm font-medium">{factor.feature}</p>
+                        <Badge variant="outline" className="text-red-600 dark:text-red-400 border-red-500/30">
+                          {factor.impact.toFixed(4)}
+                        </Badge>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">Value: {factor.value.toFixed(4)}</p>
+                      <p className="text-xs text-muted-foreground">{factor.context}</p>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Financial Ratios Grid */}
+          <Card className="bg-card border-border">
+            <CardHeader>
+              <CardTitle>Financial Ratios</CardTitle>
+              <CardDescription>Key financial metrics extracted from the report</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                <div className="p-4 bg-muted/30 rounded-lg">
+                  <p className="text-xs text-muted-foreground mb-1">Working Capital / Total Assets</p>
+                  <p className="text-lg font-semibold">{formatPercentage(financialHealthData.extractedData.ratios.working_capital_to_total_assets)}</p>
                 </div>
-                <div className="text-right">
-                  <p className="text-xs text-muted-foreground">Forecast Period</p>
-                  <p className="text-sm font-semibold">Jan 2026 - Mar 2026</p>
+                <div className="p-4 bg-muted/30 rounded-lg">
+                  <p className="text-xs text-muted-foreground mb-1">Retained Earnings / Total Assets</p>
+                  <p className="text-lg font-semibold">{formatPercentage(financialHealthData.extractedData.ratios.retained_earnings_to_total_assets)}</p>
+                </div>
+                <div className="p-4 bg-muted/30 rounded-lg">
+                  <p className="text-xs text-muted-foreground mb-1">EBIT / Total Assets</p>
+                  <p className="text-lg font-semibold">{formatPercentage(financialHealthData.extractedData.ratios.ebit_to_total_assets)}</p>
+                </div>
+                <div className="p-4 bg-muted/30 rounded-lg">
+                  <p className="text-xs text-muted-foreground mb-1">MVE / Total Liabilities</p>
+                  <p className="text-lg font-semibold">{formatDecimal(financialHealthData.extractedData.ratios.mve_to_total_liabilities)}</p>
+                </div>
+                <div className="p-4 bg-muted/30 rounded-lg">
+                  <p className="text-xs text-muted-foreground mb-1">Sales / Total Assets</p>
+                  <p className="text-lg font-semibold">{formatPercentage(financialHealthData.extractedData.ratios.sales_to_total_assets)}</p>
+                </div>
+                <div className="p-4 bg-muted/30 rounded-lg">
+                  <p className="text-xs text-muted-foreground mb-1">Current Ratio</p>
+                  <p className="text-lg font-semibold">{formatDecimal(financialHealthData.extractedData.ratios.current_ratio)}</p>
+                </div>
+                <div className="p-4 bg-muted/30 rounded-lg">
+                  <p className="text-xs text-muted-foreground mb-1">Debt to Equity Ratio</p>
+                  <p className="text-lg font-semibold">{formatDecimal(financialHealthData.extractedData.ratios.debt_to_equity_ratio)}</p>
+                </div>
+                <div className="p-4 bg-muted/30 rounded-lg">
+                  <p className="text-xs text-muted-foreground mb-1">Net Profit Margin</p>
+                  <p className="text-lg font-semibold">{formatPercentage(financialHealthData.extractedData.ratios.net_profit_margin)}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
+          {/* Historical Metrics Chart */}
+          <MetricsChart
+            data={historyChartData}
+            loading={historyLoading}
+            error={historyError}
+            companyCode={financialHealthData.symbol}
+          />
 
-                    {/* Risk Analysis Explanation */}
+          {/* Recommendations */}
+          <Card className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 border-amber-500/20">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Lightbulb className="h-5 w-5 text-amber-500" />
+                AI Recommendations
+              </CardTitle>
+              <CardDescription>Actionable insights to improve financial health</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-4">
+                {financialHealthData.explanation.recommendations.map((recommendation, index) => (
+                  <li key={index} className="flex items-start gap-3">
+                    <span className="flex-shrink-0 w-8 h-8 bg-amber-500/20 text-amber-600 dark:text-amber-400 rounded-full flex items-center justify-center text-sm font-bold">
+                      {index + 1}
+                    </span>
+                    <p className="text-sm leading-relaxed pt-1">{recommendation}</p>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+
+          {/* Risk Analysis Explanation */}
           <Card className="bg-card border-border">
             <CardHeader>
               <CardTitle>Risk Analysis Explanation</CardTitle>
@@ -231,195 +582,248 @@ export default function RiskAnalysisPage() {
                 <h4 className="font-semibold text-sm mb-1">What these metrics mean:</h4>
                 <ul className="text-sm text-muted-foreground space-y-2">
                   <li>
-                    <strong>VaR (Value at Risk):</strong> Maximum loss expected with 95% confidence over a given
-                    period
+                    <strong>Z-Score:</strong> A composite measure of financial health. Below 1.81 indicates distress, 1.81-2.99 is grey zone, above 2.99 is safe.
                   </li>
                   <li>
-                    <strong>CVaR:</strong> Average loss when VaR is exceeded, providing tail risk insight
+                    <strong>Current Ratio:</strong> Measures short-term liquidity. Values above 2.0 are generally considered healthy.
                   </li>
                   <li>
-                    <strong>Beta:</strong> Measure of volatility relative to the market ({">"}  1 = more volatile)
+                    <strong>Debt to Equity:</strong> Indicates leverage. Lower values suggest less financial risk.
                   </li>
                   <li>
-                    <strong>Volatility:</strong> Standard deviation of returns, indicating price fluctuation
-                  </li>
-                  <li>
-                    <strong>Sharpe Ratio:</strong> Risk-adjusted return metric (higher is better)
-                  </li>
-                  <li>
-                    <strong>Max Drawdown:</strong> Largest percentage decline from peak to trough
+                    <strong>Net Profit Margin:</strong> Shows profitability as a percentage of revenue.
                   </li>
                 </ul>
               </div>
               <div className="pt-2 border-t">
                 <p className="text-xs text-amber-600 dark:text-amber-400">
-                  <strong>Disclaimer:</strong> This analysis is based on historical data and mock calculations.
+                  <strong>Disclaimer:</strong> This analysis is based on AI-extracted data and ML predictions.
                   Not financial advice. Consult a qualified advisor.
                 </p>
               </div>
             </CardContent>
           </Card>
+        </>
+      )}
 
-          {/* Interactive Financial Ratios Chart */}
-          <Card className="bg-card border-border">
-            <CardHeader>
-              <CardTitle>Financial Ratios Analysis</CardTitle>
-              <CardDescription>Historical trends of key financial metrics</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {/* Controls */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium mb-2 block">Select Ratio</label>
-                  <Select value={selectedRatio} onValueChange={setSelectedRatio}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="workingCapital">Working Capital</SelectItem>
-                      <SelectItem value="netProfit">Net Profit</SelectItem>
-                      <SelectItem value="margin">Margin</SelectItem>
-                      <SelectItem value="workingCapitalRatio">Working Capital Ratio</SelectItem>
-                      <SelectItem value="currentRatio">Current Ratio</SelectItem>
-                    </SelectContent>
-                  </Select>
+      {/* Report Health Check Section */}
+      {healthCheckLoading && (
+        <Card className="bg-card border-border">
+          <CardHeader>
+            <Skeleton className="h-6 w-64" />
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[...Array(4)].map((_, i) => (
+                <div key={i}>
+                  <Skeleton className="h-20 w-full rounded-lg" />
                 </div>
-                <div>
-                  <label className="text-sm font-medium mb-2 block">Time Period</label>
-                  <Select value={yearRange} onValueChange={setYearRange}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="2012-2025">2012 - 2025</SelectItem>
-                      <SelectItem value="2015-2025">2015 - 2025</SelectItem>
-                      <SelectItem value="2020-2025">2020 - 2025</SelectItem>
-                      <SelectItem value="2022-2025">2022 - 2025</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
-              {/* Chart */}
-              <div className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={financialData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="var(--color-muted)" />
-                    <XAxis
-                      dataKey="year"
-                      stroke="var(--color-muted-foreground)"
-                      label={{ value: 'Year', position: 'insideBottom', offset: -5 }}
-                    />
-                    <YAxis
-                      stroke="var(--color-muted-foreground)"
-                      label={{ value: getRatioLabel(selectedRatio), angle: -90, position: 'insideLeft' }}
-                    />
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: "var(--color-card)",
-                        border: "1px solid var(--color-border)",
-                      }}
-                      formatter={(value: any) => {
-                        if (selectedRatio === 'margin') return `${value.toFixed(2)}%`
-                        if (selectedRatio.includes('Ratio')) return value.toFixed(2)
-                        return `LKR ${value.toFixed(0)}`
-                      }}
-                    />
-                    <Legend />
-                    <Line
-                      type="monotone"
-                      dataKey={selectedRatio}
-                      stroke="#3b82f6"
-                      strokeWidth={2}
-                      dot={{ r: 4 }}
-                      name={getRatioLabel(selectedRatio)}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </CardContent>
-          </Card>
+      {healthCheckError && (
+        <Card className="bg-red-500/10 border-red-500/30">
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-2 text-red-600 dark:text-red-400">
+              <AlertTriangle className="h-5 w-5" />
+              <p className="font-medium">Error loading report health check</p>
+            </div>
+            <p className="text-sm text-muted-foreground mt-2">{healthCheckError}</p>
+          </CardContent>
+        </Card>
+      )}
 
-          {/* Company Health Check Score */}
-          <Card className="bg-card border-border">
+      {healthCheckData && !healthCheckLoading && (
+        <>
+          {/* Report Health Check Header with Overall Score */}
+          <Card className="bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border-indigo-500/20">
             <CardHeader>
-              <CardTitle>Company Health Check</CardTitle>
-              <CardDescription>Overall financial health assessment</CardDescription>
+              <CardTitle className="flex items-center gap-2">
+                <Shield className="h-5 w-5 text-indigo-500" />
+                Financial Health Check Report
+              </CardTitle>
+              <CardDescription>
+                {healthCheckData.companyName} • {healthCheckData.detectedIndustry}
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-6">
-                {/* Score Display */}
-                <div className="text-center py-8 bg-muted/30 rounded-lg">
-                  <p className="text-sm text-muted-foreground mb-2">Health Score</p>
-                  <p className={`text-6xl font-bold ${getHealthScoreColor(getHealthScore())}`}>
-                    {getHealthScore().toFixed(1)}
-                    <span className="text-2xl text-muted-foreground">/6.0</span>
-                  </p>
-                  <p className="text-sm text-muted-foreground mt-2">
-                    {getHealthScore() >= 5 ? "Excellent" : getHealthScore() >= 3.5 ? "Good" : "Needs Improvement"}
-                  </p>
+              <div className="flex flex-col md:flex-row items-center gap-8">
+                {/* Overall Score Circle */}
+                <div className="relative flex-shrink-0">
+                  <svg className="w-32 h-32 transform -rotate-90">
+                    <circle
+                      cx="64"
+                      cy="64"
+                      r="56"
+                      stroke="currentColor"
+                      strokeWidth="8"
+                      fill="none"
+                      className="text-muted/30"
+                    />
+                    <circle
+                      cx="64"
+                      cy="64"
+                      r="56"
+                      stroke={getScoreColor(healthCheckData.overallScore)}
+                      strokeWidth="8"
+                      fill="none"
+                      strokeDasharray={`${(healthCheckData.overallScore / 100) * 352} 352`}
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className="text-3xl font-bold">{healthCheckData.overallScore}</span>
+                    <span className="text-xs text-muted-foreground">/100</span>
+                  </div>
                 </div>
-
-                {/* Health Metrics */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="p-4 bg-muted/30 rounded-lg">
-                    <p className="text-xs text-muted-foreground mb-1">Liquidity</p>
-                    <div className="flex items-center justify-between">
-                      <p className="text-lg font-semibold">0.9/1.0</p>
-                      <div className="w-16 h-2 bg-muted rounded-full overflow-hidden">
-                        <div className="h-full bg-green-500" style={{ width: '90%' }} />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="p-4 bg-muted/30 rounded-lg">
-                    <p className="text-xs text-muted-foreground mb-1">Profitability</p>
-                    <div className="flex items-center justify-between">
-                      <p className="text-lg font-semibold">0.8/1.0</p>
-                      <div className="w-16 h-2 bg-muted rounded-full overflow-hidden">
-                        <div className="h-full bg-yellow-500" style={{ width: '80%' }} />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="p-4 bg-muted/30 rounded-lg">
-                    <p className="text-xs text-muted-foreground mb-1">Solvency</p>
-                    <div className="flex items-center justify-between">
-                      <p className="text-lg font-semibold">0.7/1.0</p>
-                      <div className="w-16 h-2 bg-muted rounded-full overflow-hidden">
-                        <div className="h-full bg-blue-500" style={{ width: '70%' }} />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="p-4 bg-muted/30 rounded-lg">
-                    <p className="text-xs text-muted-foreground mb-1">Efficiency</p>
-                    <div className="flex items-center justify-between">
-                      <p className="text-lg font-semibold">0.8/1.0</p>
-                      <div className="w-16 h-2 bg-muted rounded-full overflow-hidden">
-                        <div className="h-full bg-green-500" style={{ width: '80%' }} />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="p-4 bg-muted/30 rounded-lg">
-                    <p className="text-xs text-muted-foreground mb-1">Growth</p>
-                    <div className="flex items-center justify-between">
-                      <p className="text-lg font-semibold">0.6/1.0</p>
-                      <div className="w-16 h-2 bg-muted rounded-full overflow-hidden">
-                        <div className="h-full bg-yellow-500" style={{ width: '60%' }} />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="p-4 bg-muted/30 rounded-lg">
-                    <p className="text-xs text-muted-foreground mb-1">Market Position</p>
-                    <div className="flex items-center justify-between">
-                      <p className="text-lg font-semibold">0.7/1.0</p>
-                      <div className="w-16 h-2 bg-muted rounded-full overflow-hidden">
-                        <div className="h-full bg-blue-500" style={{ width: '70%' }} />
-                      </div>
-                    </div>
+                <div className="flex-1 text-center md:text-left">
+                  <Badge className={`${getHealthStatusColor(healthCheckData.overallStatus)} px-4 py-1 text-sm font-medium mb-3`}>
+                    {healthCheckData.overallStatus}
+                  </Badge>
+                  <p className="text-sm text-muted-foreground leading-relaxed mt-2">
+                    {healthCheckData.analysisNotes}
+                  </p>
+                  {/* Report Link */}
+                  <div className="mt-4">
+                    <a
+                      href={healthCheckData.reportInfo.downloadUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                    >
+                      <FileText className="h-4 w-4" />
+                      View Source Report ({healthCheckData.reportInfo.reportPeriod})
+                      <ExternalLink className="h-3 w-3" />
+                    </a>
                   </div>
                 </div>
               </div>
             </CardContent>
           </Card>
+
+          {/* Standard Health Checks */}
+          <Card className="bg-card border-border">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <ClipboardList className="h-5 w-5" />
+                Standard Health Checks
+              </CardTitle>
+              <CardDescription>Core financial health metrics assessment</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {healthCheckData.standardHealthChecks.map((check, index) => (
+                  <div key={index} className="p-4 rounded-lg border bg-muted/20 hover:bg-muted/30 transition-colors">
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <Gauge className="h-4 w-4 text-muted-foreground" />
+                        <h4 className="font-medium text-sm">{check.name}</h4>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg font-bold" style={{ color: getScoreColor(check.score) }}>
+                          {check.score}
+                        </span>
+                        <Badge className={`${getHealthStatusColor(check.status)} text-xs`}>
+                          {check.status}
+                        </Badge>
+                      </div>
+                    </div>
+                    {/* Score bar */}
+                    <div className="w-full h-2 bg-muted rounded-full overflow-hidden mb-3">
+                      <div
+                        className="h-full rounded-full transition-all duration-500"
+                        style={{
+                          width: `${check.score}%`,
+                          backgroundColor: getScoreColor(check.score)
+                        }}
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground leading-relaxed">{check.description}</p>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Dynamic Health Checks */}
+          {healthCheckData.dynamicHealthChecks.length > 0 && (
+            <Card className="bg-card border-border">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Activity className="h-5 w-5" />
+                  Industry-Specific Health Checks
+                </CardTitle>
+                <CardDescription>AI-identified metrics relevant to this company's industry</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {healthCheckData.dynamicHealthChecks.map((check, index) => (
+                    <div key={index} className="p-4 rounded-lg border bg-gradient-to-r from-muted/20 to-muted/10">
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <Target className="h-4 w-4 text-indigo-500" />
+                          <h4 className="font-medium text-sm">{check.name}</h4>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-lg font-bold" style={{ color: getScoreColor(check.score) }}>
+                            {check.score}
+                          </span>
+                          <Badge className={`${getHealthStatusColor(check.status)} text-xs`}>
+                            {check.status}
+                          </Badge>
+                        </div>
+                      </div>
+                      {/* Score bar */}
+                      <div className="w-full h-2 bg-muted rounded-full overflow-hidden mb-3">
+                        <div
+                          className="h-full rounded-full transition-all duration-500"
+                          style={{
+                            width: `${check.score}%`,
+                            backgroundColor: getScoreColor(check.score)
+                          }}
+                        />
+                      </div>
+                      <p className="text-xs text-muted-foreground leading-relaxed mb-2">{check.description}</p>
+                      <div className="flex items-start gap-2 p-2 rounded bg-indigo-500/10 border border-indigo-500/20">
+                        <Info className="h-4 w-4 text-indigo-500 flex-shrink-0 mt-0.5" />
+                        <p className="text-xs text-indigo-600 dark:text-indigo-400">
+                          <strong>Why this matters:</strong> {check.relevanceReason}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Health Check Recommendations */}
+          {healthCheckData.recommendations.length > 0 && (
+            <Card className="bg-gradient-to-br from-teal-500/10 to-cyan-500/10 border-teal-500/20">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Lightbulb className="h-5 w-5 text-teal-500" />
+                  Health Check Recommendations
+                </CardTitle>
+                <CardDescription>Strategic recommendations based on the health assessment</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-4">
+                  {healthCheckData.recommendations.map((recommendation, index) => (
+                    <li key={index} className="flex items-start gap-3">
+                      <span className="flex-shrink-0 w-8 h-8 bg-teal-500/20 text-teal-600 dark:text-teal-400 rounded-full flex items-center justify-center text-sm font-bold">
+                        {index + 1}
+                      </span>
+                      <p className="text-sm leading-relaxed pt-1">{recommendation}</p>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          )}
         </>
       )}
 
@@ -557,7 +961,7 @@ export default function RiskAnalysisPage() {
       )}
 
       {/* Empty State */}
-      {!showFinancialHealth && !results && !loading && (
+      {!financialHealthData && !financialHealthLoading && !results && !loading && (
         <Card className="bg-muted/30 border-dashed">
           <CardContent className="pt-12 pb-12 text-center">
             <p className="text-muted-foreground">Select a stock and run the analysis to see results</p>
