@@ -10,6 +10,7 @@ import { TickerSearch } from "@/components/ticker-search"
 import { KpiCard } from "@/components/kpi-card"
 import { ChartCard } from "@/components/chart-card"
 import { MetricsChart } from "@/components/metrics-chart"
+import { CompanySymbolSearch } from "@/components/company-symbol-search"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -207,12 +208,15 @@ export default function RiskAnalysisPage() {
           <div>
             <label className="text-sm font-medium mb-2 block">Stock Symbol</label>
             <div className="flex gap-2">
-              <Input
+              <CompanySymbolSearch
                 value={symbolInput}
-                onChange={(e) => setSymbolInput(e.target.value.toUpperCase())}
-                onKeyPress={handleKeyPress}
-                placeholder="Enter symbol (e.g., ALUM.N0000)"
-                className="flex-1"
+                onChange={setSymbolInput}
+                onSelect={(symbol) => {
+                  setSymbolInput(symbol)
+                }}
+                onEnter={handleSymbolAnalyze}
+                disabled={financialHealthLoading}
+                placeholder="Search by company name or symbol..."
               />
               <Button
                 onClick={handleSymbolAnalyze}
@@ -223,7 +227,7 @@ export default function RiskAnalysisPage() {
               </Button>
             </div>
             <p className="text-xs text-muted-foreground mt-2">
-              Enter the full CSE symbol including the suffix (e.g., ALUM.N0000, JKH.N0000)
+              Search for a company by name and select from the list, or enter the symbol directly
             </p>
           </div>
         </CardContent>
@@ -365,7 +369,7 @@ export default function RiskAnalysisPage() {
           </div>
 
           {/* AI Explanation Summary */}
-          <Card className="bg-card border-border">
+          {/* <Card className="bg-card border-border">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Lightbulb className="h-5 w-5 text-yellow-500" />
@@ -375,7 +379,7 @@ export default function RiskAnalysisPage() {
             <CardContent>
               <p className="text-sm leading-relaxed">{financialHealthData.explanation.summary}</p>
             </CardContent>
-          </Card>
+          </Card> */}
 
           {/* Key Drivers */}
           <Card className="bg-card border-border">
@@ -401,7 +405,7 @@ export default function RiskAnalysisPage() {
           </Card>
 
           {/* Feature Impacts Chart */}
-          <Card className="bg-card border-border">
+          {/* <Card className="bg-card border-border">
             <CardHeader>
               <CardTitle>Feature Impact Analysis</CardTitle>
               <CardDescription>How each financial metric contributes to the Z-Score prediction</CardDescription>
@@ -436,11 +440,10 @@ export default function RiskAnalysisPage() {
                 </ResponsiveContainer>
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
 
           {/* Positive & Negative Factors */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Positive Factors */}
+          {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card className="bg-green-500/5 border-green-500/20">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-green-600 dark:text-green-400">
@@ -470,7 +473,6 @@ export default function RiskAnalysisPage() {
               </CardContent>
             </Card>
 
-            {/* Negative Factors */}
             <Card className="bg-red-500/5 border-red-500/20">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-red-600 dark:text-red-400">
@@ -495,7 +497,7 @@ export default function RiskAnalysisPage() {
                 </ul>
               </CardContent>
             </Card>
-          </div>
+          </div> */}
 
           {/* Financial Ratios Grid */}
           <Card className="bg-card border-border">
@@ -537,20 +539,34 @@ export default function RiskAnalysisPage() {
                   <p className="text-xs text-muted-foreground mb-1">Net Profit Margin</p>
                   <p className="text-lg font-semibold">{formatPercentage(financialHealthData.extractedData.ratios.net_profit_margin)}</p>
                 </div>
+                
+                <div className="p-4 bg-muted/30 rounded-lg">
+                <div className="text-center">
+                <p className="text-xs text-muted-foreground mb-1">Z Score</p>
+                  <p className="text-xs font-bold">{financialHealthData.extractedData.ratios.z_score.toFixed(4)}</p>
+                  <div className="mt-2 flex justify-center">
+                    <Badge className={`${getZoneColor(financialHealthData.riskAssessment.zone)} px-4 py-1 text-xs font-medium`}>
+                      {getZoneIcon(financialHealthData.riskAssessment.zone)}
+                      <span className="ml-2">{financialHealthData.riskAssessment.zone} Zone</span>
+                    </Badge>
+                  </div>
+                </div>
+                </div>
+
               </div>
             </CardContent>
           </Card>
 
           {/* Historical Metrics Chart */}
-          <MetricsChart
+          {/* <MetricsChart
             data={historyChartData}
             loading={historyLoading}
             error={historyError}
             companyCode={financialHealthData.symbol}
-          />
+          /> */}
 
           {/* Recommendations */}
-          <Card className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 border-amber-500/20">
+          {/* <Card className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 border-amber-500/20">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Lightbulb className="h-5 w-5 text-amber-500" />
@@ -570,39 +586,7 @@ export default function RiskAnalysisPage() {
                 ))}
               </ul>
             </CardContent>
-          </Card>
-
-          {/* Risk Analysis Explanation */}
-          <Card className="bg-card border-border">
-            <CardHeader>
-              <CardTitle>Risk Analysis Explanation</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div>
-                <h4 className="font-semibold text-sm mb-1">What these metrics mean:</h4>
-                <ul className="text-sm text-muted-foreground space-y-2">
-                  <li>
-                    <strong>Z-Score:</strong> A composite measure of financial health. Below 1.81 indicates distress, 1.81-2.99 is grey zone, above 2.99 is safe.
-                  </li>
-                  <li>
-                    <strong>Current Ratio:</strong> Measures short-term liquidity. Values above 2.0 are generally considered healthy.
-                  </li>
-                  <li>
-                    <strong>Debt to Equity:</strong> Indicates leverage. Lower values suggest less financial risk.
-                  </li>
-                  <li>
-                    <strong>Net Profit Margin:</strong> Shows profitability as a percentage of revenue.
-                  </li>
-                </ul>
-              </div>
-              <div className="pt-2 border-t">
-                <p className="text-xs text-amber-600 dark:text-amber-400">
-                  <strong>Disclaimer:</strong> This analysis is based on AI-extracted data and ML predictions.
-                  Not financial advice. Consult a qualified advisor.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+          </Card> */}
         </>
       )}
 
@@ -636,9 +620,8 @@ export default function RiskAnalysisPage() {
         </Card>
       )}
 
-      {healthCheckData && !healthCheckLoading && (
+      {/* {healthCheckData && !healthCheckLoading && (
         <>
-          {/* Report Health Check Header with Overall Score */}
           <Card className="bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border-indigo-500/20">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -651,7 +634,7 @@ export default function RiskAnalysisPage() {
             </CardHeader>
             <CardContent>
               <div className="flex flex-col md:flex-row items-center gap-8">
-                {/* Overall Score Circle */}
+
                 <div className="relative flex-shrink-0">
                   <svg className="w-32 h-32 transform -rotate-90">
                     <circle
@@ -686,7 +669,6 @@ export default function RiskAnalysisPage() {
                   <p className="text-sm text-muted-foreground leading-relaxed mt-2">
                     {healthCheckData.analysisNotes}
                   </p>
-                  {/* Report Link */}
                   <div className="mt-4">
                     <a
                       href={healthCheckData.reportInfo.downloadUrl}
@@ -704,7 +686,7 @@ export default function RiskAnalysisPage() {
             </CardContent>
           </Card>
 
-          {/* Standard Health Checks */}
+
           <Card className="bg-card border-border">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -731,7 +713,7 @@ export default function RiskAnalysisPage() {
                         </Badge>
                       </div>
                     </div>
-                    {/* Score bar */}
+
                     <div className="w-full h-2 bg-muted rounded-full overflow-hidden mb-3">
                       <div
                         className="h-full rounded-full transition-all duration-500"
@@ -748,7 +730,6 @@ export default function RiskAnalysisPage() {
             </CardContent>
           </Card>
 
-          {/* Dynamic Health Checks */}
           {healthCheckData.dynamicHealthChecks.length > 0 && (
             <Card className="bg-card border-border">
               <CardHeader>
@@ -776,7 +757,7 @@ export default function RiskAnalysisPage() {
                           </Badge>
                         </div>
                       </div>
-                      {/* Score bar */}
+
                       <div className="w-full h-2 bg-muted rounded-full overflow-hidden mb-3">
                         <div
                           className="h-full rounded-full transition-all duration-500"
@@ -800,7 +781,7 @@ export default function RiskAnalysisPage() {
             </Card>
           )}
 
-          {/* Health Check Recommendations */}
+   
           {healthCheckData.recommendations.length > 0 && (
             <Card className="bg-gradient-to-br from-teal-500/10 to-cyan-500/10 border-teal-500/20">
               <CardHeader>
@@ -825,7 +806,7 @@ export default function RiskAnalysisPage() {
             </Card>
           )}
         </>
-      )}
+      )} */}
 
       {/* Results */}
       {results && (
