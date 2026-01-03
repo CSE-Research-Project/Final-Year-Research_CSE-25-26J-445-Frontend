@@ -9,9 +9,6 @@ import {
 import { usePredictStore } from "@/stores/usePredictStore";
 import { TickerSearch } from "@/components/ticker-search";
 import { ConfidenceBadge } from "@/components/confidence-badge";
-import { ChartCard } from "@/components/chart-card";
-import { ForecastLineChart } from "@/components/forecast-line-chart";
-import { DeltaBarChart } from "@/components/delta-bar-chart";
 import { Button } from "@/components/ui/button";
 import {
   Card,
