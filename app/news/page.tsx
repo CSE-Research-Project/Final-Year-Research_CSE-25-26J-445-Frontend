@@ -1,10 +1,12 @@
 "use client"
 
 import type React from "react"
-
 import { useEffect, useState } from "react"
 import Link from "next/link"
+
 import { newsList, newsGetAllTags, type NewsArticle } from "@/lib/fakeApi"
+
+import AnalyzeBox from "@/components/news/AnalyzeBox"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -24,7 +26,13 @@ export default function News() {
       try {
         const tags = await newsGetAllTags()
         setAllTags(tags)
-        const data = await newsList(searchQuery || undefined, selectedTag || undefined, sortOrder)
+
+        const data = await newsList(
+          searchQuery || undefined,
+          selectedTag || undefined,
+          sortOrder
+        )
+
         setArticles(data)
       } catch (error) {
         console.error("Failed to fetch news:", error)
@@ -45,10 +53,15 @@ export default function News() {
     <div className="space-y-6">
       <div className="space-y-2">
         <h1 className="text-3xl font-bold text-foreground">News & Updates</h1>
-        <p className="text-muted-foreground">Stay informed about market news and company updates</p>
+        <p className="text-muted-foreground">
+          Stay informed about market news and company updates
+        </p>
       </div>
 
-      {/* Search and Filters */}
+      {/* ================= ANALYZE CUSTOM NEWS ================= */}
+      <AnalyzeBox />
+
+      {/* ================= SEARCH & FILTERS ================= */}
       <Card className="bg-card border-border">
         <CardContent className="pt-6 space-y-4">
           <Input
@@ -60,7 +73,9 @@ export default function News() {
           />
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground">Filter by Category</label>
+            <label className="text-sm font-medium text-foreground">
+              Filter by Category
+            </label>
             <div className="flex flex-wrap gap-2">
               <Button
                 variant={selectedTag === null ? "default" : "outline"}
@@ -69,6 +84,7 @@ export default function News() {
               >
                 All
               </Button>
+
               {allTags.map((tag) => (
                 <Button
                   key={tag}
@@ -83,10 +99,14 @@ export default function News() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground">Sort</label>
+            <label className="text-sm font-medium text-foreground">
+              Sort
+            </label>
             <select
               value={sortOrder}
-              onChange={(e) => setSortOrder(e.target.value as "newest" | "oldest")}
+              onChange={(e) =>
+                setSortOrder(e.target.value as "newest" | "oldest")
+              }
               className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground"
             >
               <option value="newest">Newest First</option>
@@ -96,11 +116,14 @@ export default function News() {
         </CardContent>
       </Card>
 
-      {/* News List */}
+      {/* ================= NEWS LIST ================= */}
       {loading ? (
         <div className="space-y-4">
           {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="h-48 bg-muted rounded-lg animate-pulse" />
+            <div
+              key={i}
+              className="h-48 bg-muted rounded-lg animate-pulse"
+            />
           ))}
         </div>
       ) : (
@@ -122,22 +145,34 @@ export default function News() {
                           <h3 className="text-lg font-semibold text-foreground hover:text-primary transition-colors">
                             {article.title}
                           </h3>
-                          <p className="text-sm text-muted-foreground mt-1">{article.summary}</p>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {article.summary}
+                          </p>
                         </div>
-                        <ChevronRight className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-1" />
+                        <ChevronRight className="h-5 w-5 text-muted-foreground mt-1" />
                       </div>
+
                       <div className="flex flex-wrap gap-2 items-center justify-between">
                         <div className="flex flex-wrap gap-2">
                           {article.tags.map((tag) => (
-                            <Badge key={tag} variant="secondary" className="text-xs">
+                            <Badge
+                              key={tag}
+                              variant="secondary"
+                              className="text-xs"
+                            >
                               {tag}
                             </Badge>
                           ))}
                         </div>
+
                         <div className="flex items-center gap-2 text-xs text-muted-foreground">
                           <span>{article.source}</span>
                           <span>•</span>
-                          <span>{new Date(article.publishedDate).toLocaleDateString()}</span>
+                          <span>
+                            {new Date(
+                              article.publishedDate
+                            ).toLocaleDateString()}
+                          </span>
                         </div>
                       </div>
                     </div>
