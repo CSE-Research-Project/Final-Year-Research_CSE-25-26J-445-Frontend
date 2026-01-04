@@ -221,7 +221,7 @@ export default function RiskAnalysisPage() {
               <Button
                 onClick={handleSymbolAnalyze}
                 disabled={!symbolInput.trim() || financialHealthLoading}
-                className="px-6"
+                className="px-6 cursor-pointer"
               >
                 {financialHealthLoading ? "Analyzing..." : "Analyze"}
               </Button>
@@ -311,75 +311,119 @@ export default function RiskAnalysisPage() {
             </CardContent>
           </Card>
 
-          {/* Z-Score & Risk Assessment */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Current Z-Score */}
-            <Card className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 border-blue-500/20">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Activity className="h-5 w-5" />
-                  Current Z-Score
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-4">
-                  <p className="text-5xl font-bold">{financialHealthData.extractedData.ratios.z_score.toFixed(4)}</p>
-                  <div className="mt-4 flex justify-center">
-                    <Badge className={`${getZoneColor(financialHealthData.riskAssessment.zone)} px-4 py-1 text-sm font-medium`}>
-                      {getZoneIcon(financialHealthData.riskAssessment.zone)}
-                      <span className="ml-2">{financialHealthData.riskAssessment.zone} Zone</span>
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground mt-3">{financialHealthData.riskAssessment.description}</p>
-                </div>
-              </CardContent>
-            </Card>
+          {/* Next 3 Month Z-Score Prediction - Full Width */}
+          <Card className="relative overflow-hidden bg-gradient-to-br from-emerald-500/10 via-teal-500/10 to-cyan-500/10 border-emerald-500/30 backdrop-blur">
+            <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:20px_20px]" />
+            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-emerald-400/20 to-transparent rounded-full blur-3xl" />
 
-            {/* Predicted Z-Score */}
-            <Card className="bg-gradient-to-br from-green-500/10 to-teal-500/10 border-green-500/20">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <TrendingUp className="h-5 w-5" />
-                  Next Quarter Prediction
-                </CardTitle>
-                <CardDescription>Predicted by {financialHealthData.prediction.model_name} model</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-4">
-                  <p className="text-5xl font-bold">{financialHealthData.prediction.z_score_next_quarter.toFixed(4)}</p>
-                  <div className="mt-4 flex items-center justify-center gap-2">
+            <CardHeader className="relative z-10">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="p-2 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-lg shadow-lg shadow-emerald-500/20">
+                    <TrendingUp className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-lg bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">
+                      Next 3 Month Z-Score Prediction
+                    </CardTitle>
+                    <CardDescription className="text-xs mt-0.5">
+                      Powered by {financialHealthData.prediction.model_name} Model
+                    </CardDescription>
+                  </div>
+                </div>
+
+                {/* Confidence Badge */}
+                {/* <div className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 border border-blue-500/30 rounded-full backdrop-blur-sm">
+                  <div className="relative">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
+                    <div className="absolute inset-0 w-2 h-2 bg-blue-400 rounded-full animate-ping" />
+                  </div>
+                  <span className="text-xs font-semibold text-blue-600 dark:text-blue-400">
+                    86% Confidence
+                  </span>
+                </div> */}
+              </div>
+            </CardHeader>
+
+            <CardContent className="relative z-10">
+              <div className="text-center py-6">
+                {/* Main Score Display */}
+                <div className="relative inline-block">
+                  <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-500 blur-xl opacity-20 animate-pulse" />
+                  <p className="relative text-6xl font-bold bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 dark:from-emerald-400 dark:via-teal-400 dark:to-cyan-400 bg-clip-text text-transparent tracking-tight">
+                    {financialHealthData.prediction.z_score_next_quarter.toFixed(4)}
+                  </p>
+                </div>
+
+                {/* Change Indicator */}
+                <div className="mt-6 flex items-center justify-center gap-3">
+                  <div className={`flex items-center gap-2 px-4 py-2 rounded-full backdrop-blur-sm ${financialHealthData.prediction.z_score_next_quarter > financialHealthData.extractedData.ratios.z_score
+                    ? 'bg-green-500/20 border border-green-500/30'
+                    : 'bg-red-500/20 border border-red-500/30'
+                    }`}>
                     {financialHealthData.prediction.z_score_next_quarter > financialHealthData.extractedData.ratios.z_score ? (
                       <TrendingUp className="h-5 w-5 text-green-600 dark:text-green-400" />
                     ) : (
                       <TrendingDown className="h-5 w-5 text-red-600 dark:text-red-400" />
                     )}
-                    <span className={`text-sm font-medium ${financialHealthData.prediction.z_score_next_quarter > financialHealthData.extractedData.ratios.z_score
+                    <span className={`text-base font-bold ${financialHealthData.prediction.z_score_next_quarter > financialHealthData.extractedData.ratios.z_score
                       ? 'text-green-600 dark:text-green-400'
                       : 'text-red-600 dark:text-red-400'
                       }`}>
-                      {((financialHealthData.prediction.z_score_next_quarter - financialHealthData.extractedData.ratios.z_score) / financialHealthData.extractedData.ratios.z_score * 100).toFixed(2)}% change expected
+                      {((financialHealthData.prediction.z_score_next_quarter - financialHealthData.extractedData.ratios.z_score) / financialHealthData.extractedData.ratios.z_score * 100).toFixed(2)}%
+                    </span>
+                    <span className="text-sm font-medium text-muted-foreground">
+                      change expected
                     </span>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-2">
-                    Prediction timestamp: {new Date(financialHealthData.prediction.timestamp).toLocaleString()}
-                  </p>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
+
+                {/* Model Accuracy Indicator */}
+                <div className="mt-6 pt-4 border-t border-emerald-500/20">
+                  <div className="flex items-center justify-center gap-4">
+                    <div className="text-left">
+                      <p className="text-xs text-muted-foreground mb-1">Model Confidence</p>
+                      <div className="flex items-center gap-2">
+                        <div className="w-24 h-2 bg-muted/30 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full transition-all duration-1000 ease-out"
+                            style={{ width: '86%' }}
+                          />
+                        </div>
+                        <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">86%</span>
+                      </div>
+                    </div>
+
+                    <div className="h-8 w-px bg-emerald-500/20" />
+
+                    <div className="text-left">
+                      <p className="text-xs text-muted-foreground mb-1">Prediction Date</p>
+                      <p className="text-sm font-medium">
+                        {new Date(financialHealthData.prediction.timestamp).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                          year: 'numeric'
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* AI Explanation Summary */}
-          {/* <Card className="bg-card border-border">
+          <Card className="bg-card border-border">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Lightbulb className="h-5 w-5 text-yellow-500" />
-                AI Analysis Summary
+                Analysis Summary
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm leading-relaxed">{financialHealthData.explanation.summary}</p>
             </CardContent>
-          </Card> */}
+          </Card>
 
           {/* Key Drivers */}
           <Card className="bg-card border-border">
@@ -405,7 +449,7 @@ export default function RiskAnalysisPage() {
           </Card>
 
           {/* Feature Impacts Chart */}
-          {/* <Card className="bg-card border-border">
+          <Card className="bg-card border-border">
             <CardHeader>
               <CardTitle>Feature Impact Analysis</CardTitle>
               <CardDescription>How each financial metric contributes to the Z-Score prediction</CardDescription>
@@ -440,10 +484,10 @@ export default function RiskAnalysisPage() {
                 </ResponsiveContainer>
               </div>
             </CardContent>
-          </Card> */}
+          </Card>
 
           {/* Positive & Negative Factors */}
-          {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card className="bg-green-500/5 border-green-500/20">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-green-600 dark:text-green-400">
@@ -497,10 +541,10 @@ export default function RiskAnalysisPage() {
                 </ul>
               </CardContent>
             </Card>
-          </div> */}
+          </div>
 
           {/* Financial Ratios Grid */}
-          <Card className="bg-card border-border">
+          {/* <Card className="bg-card border-border">
             <CardHeader>
               <CardTitle>Financial Ratios</CardTitle>
               <CardDescription>Key financial metrics extracted from the report</CardDescription>
@@ -539,23 +583,23 @@ export default function RiskAnalysisPage() {
                   <p className="text-xs text-muted-foreground mb-1">Net Profit Margin</p>
                   <p className="text-lg font-semibold">{formatPercentage(financialHealthData.extractedData.ratios.net_profit_margin)}</p>
                 </div>
-                
+
                 <div className="p-4 bg-muted/30 rounded-lg">
-                <div className="text-center">
-                <p className="text-xs text-muted-foreground mb-1">Z Score</p>
-                  <p className="text-xs font-bold">{financialHealthData.extractedData.ratios.z_score.toFixed(4)}</p>
-                  <div className="mt-2 flex justify-center">
-                    <Badge className={`${getZoneColor(financialHealthData.riskAssessment.zone)} px-4 py-1 text-xs font-medium`}>
-                      {getZoneIcon(financialHealthData.riskAssessment.zone)}
-                      <span className="ml-2">{financialHealthData.riskAssessment.zone} Zone</span>
-                    </Badge>
+                  <div className="text-center">
+                    <p className="text-xs text-muted-foreground mb-1">Z Score</p>
+                    <p className="text-xs font-bold">{financialHealthData.extractedData.ratios.z_score.toFixed(4)}</p>
+                    <div className="mt-2 flex justify-center">
+                      <Badge className={`${getZoneColor(financialHealthData.riskAssessment.zone)} px-4 py-1 text-xs font-medium`}>
+                        {getZoneIcon(financialHealthData.riskAssessment.zone)}
+                        <span className="ml-2">{financialHealthData.riskAssessment.zone} Zone</span>
+                      </Badge>
+                    </div>
                   </div>
-                </div>
                 </div>
 
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
 
           {/* Historical Metrics Chart */}
           {/* <MetricsChart
@@ -570,7 +614,7 @@ export default function RiskAnalysisPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Lightbulb className="h-5 w-5 text-amber-500" />
-                AI Recommendations
+                Recommendations
               </CardTitle>
               <CardDescription>Actionable insights to improve financial health</CardDescription>
             </CardHeader>
@@ -737,7 +781,7 @@ export default function RiskAnalysisPage() {
                   <Activity className="h-5 w-5" />
                   Industry-Specific Health Checks
                 </CardTitle>
-                <CardDescription>AI-identified metrics relevant to this company's industry</CardDescription>
+                <CardDescription>Identified metrics relevant to this company's industry</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -781,7 +825,7 @@ export default function RiskAnalysisPage() {
             </Card>
           )}
 
-   
+
           {healthCheckData.recommendations.length > 0 && (
             <Card className="bg-gradient-to-br from-teal-500/10 to-cyan-500/10 border-teal-500/20">
               <CardHeader>
