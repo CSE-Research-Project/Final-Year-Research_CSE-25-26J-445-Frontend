@@ -1,44 +1,1329 @@
 {
   "companies": [
     {
-      "symbol": "ASPI",
-      "name": "Asia Pacific Wire & Cable Corporation PLC",
-      "sector": "Manufacturing"
+      "symbol": "AAF",
+      "name": "Asia Asset Finance",
+      "sector": "Unknown"
     },
     {
-      "symbol": "DIMO",
-      "name": "Dimo Holdings Limited",
-      "sector": "Auto & Components"
+      "symbol": "AAIC",
+      "name": "Softlogic Life Insurance",
+      "sector": "Unknown"
     },
     {
-      "symbol": "DIALOG",
-      "name": "Dialog Axiata PLC",
-      "sector": "Telecommunications"
+      "symbol": "ABAN",
+      "name": "Abans Electricals",
+      "sector": "Unknown"
     },
     {
-      "symbol": "SLTL",
-      "name": "Sri Lanka Telecom Limited",
-      "sector": "Telecommunications"
+      "symbol": "ABL",
+      "name": "Amana Bank",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "ACAP",
+      "name": "Asia Capital",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "ACL",
+      "name": "ACL Cables",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "ACME",
+      "name": "ACME Printing & Packaging",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "AEL",
+      "name": "Access Engineering",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "AFS",
+      "name": "Alpha Fire Services",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "AFSL",
+      "name": "Abans Finance",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "AGAL",
+      "name": "Agalawatte Plantations",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "AGPL",
+      "name": "Agarapatana Plantations",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "AGST",
+      "name": "Agstar",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "AHPL",
+      "name": "Asian Hotels & Properties",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "AHUN",
+      "name": "Aitken Spence Hotel Holdings",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "AINS",
+      "name": "Arpico Insurance",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "ALLI",
+      "name": "Alliance Finance Company",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "ALUM",
+      "name": "Alumex",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "AMF",
+      "name": "Associated Motor Finance Company",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "AMSL",
+      "name": "Asiri Surgical Hospital",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "APLA",
+      "name": "ACL Plastics",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "ASCO",
+      "name": "Lanka Realty Investments",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "ASHO",
+      "name": "Lanka Ashok Leyland",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "ASIR",
+      "name": "Asiri Hospital Holdings",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "ASIY",
+      "name": "Asia Siyaka Commodities",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "ASPH",
+      "name": "Industrial Asphalts (Lanka)",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "ATL",
+      "name": "Amana Takaful",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "ATLL",
+      "name": "Amana Takaful Life",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "AUTO",
+      "name": "The Autodrome",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "BALA",
+      "name": "Balangoda Plantations",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "BBH",
+      "name": "Browns Beach Hotels",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "BERU",
+      "name": "Beruwala Resorts",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "BFL",
+      "name": "Bairaha Farms",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "BFN",
+      "name": "Orient Finance",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "BIL",
+      "name": "Browns Investments",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "BLUE",
+      "name": "Blue Diamonds Jewellery Worldwide",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "BOGA",
+      "name": "Bogala Graphite Lanka",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "BOPL",
+      "name": "Bogawantalawa Tea Estates",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "BPPL",
+      "name": "B P P L Holdings",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "BREW",
+      "name": "Ceylon Beverage Holdings",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "BRR",
+      "name": "Bansei Royal Resorts Hikkaduwa",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "BRWN",
+      "name": "Brown and Company",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "BUKI",
+      "name": "Bukit Darah",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CABO",
+      "name": "Cargo Boat Development Company",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CALF",
+      "name": "Dialog Finance",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CALT",
+      "name": "Capital Alliance",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CARE",
+      "name": "Printcare",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CARG",
+      "name": "Cargills (Ceylon)",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CARS",
+      "name": "Carson Cumberbatch",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CBNK",
+      "name": "Cargills Bank",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CCS",
+      "name": "Ceylon Cold Stores",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CDB",
+      "name": "Citizens Development Business Finance",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CERA",
+      "name": "Lanka Ceramic",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CFI",
+      "name": "Colombo Fort Investments",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CFIN",
+      "name": "Central Finance Company",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CFLB",
+      "name": "The Colombo Fort Land & Building",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CFVF",
+      "name": "First Capital Holdings",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CHL",
+      "name": "Ceylon Hospitals",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CHMX",
+      "name": "Chemanex",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CHOT",
+      "name": "Ceylon Hotels Corporation",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CIC",
+      "name": "CIC Holdings",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CIND",
+      "name": "Central Industries",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CINS",
+      "name": "Ceylinco Insurance",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CINV",
+      "name": "Ceylon Investment",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CIT",
+      "name": "Colombo Investment Trust",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CITH",
+      "name": "Hikkaduwa Beach Resort",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CITW",
+      "name": "Waskaduwa Beach Resort",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CLND",
+      "name": "Colombo Land and Development Company",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "COCO",
+      "name": "Renuka Foods",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "COCR",
+      "name": "Commercial Credit & Finance",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "COLO",
+      "name": "C M Holdings",
+      "sector": "Unknown"
     },
     {
       "symbol": "COMB",
-      "name": "Colombo Commercial Warehousing Company PLC",
-      "sector": "Trading"
+      "name": "Commercial Bank of Ceylon",
+      "sector": "Unknown"
     },
     {
-      "symbol": "MTL",
-      "name": "Melstacorp Limited",
-      "sector": "Manufacturing"
+      "symbol": "COMD",
+      "name": "Commercial Development Company",
+      "sector": "Unknown"
     },
     {
-      "symbol": "CARSONS",
-      "name": "Carsons Cumberbatch PLC",
-      "sector": "Trading"
+      "symbol": "CONN",
+      "name": "Hayleys Leisure",
+      "sector": "Unknown"
     },
     {
-      "symbol": "SOFTLOGIC",
-      "name": "Softlogic Holdings PLC",
-      "sector": "Retail"
+      "symbol": "COOP",
+      "name": "Co-Operative Insurance Company",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CPRT",
+      "name": "Ceylon Printers",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CRL",
+      "name": "Softlogic Finance",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CSD",
+      "name": "Seylan Developments",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CSF",
+      "name": "Nation Lanka Finance",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CSLK",
+      "name": "Cable Solutions",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CTBL",
+      "name": "Ceylon Tea Brokers",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CTC",
+      "name": "Ceylon Tobacco Company",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CTEA",
+      "name": "Dilmah Ceylon Tea Company",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CTHR",
+      "name": "C T Holdings",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CTLD",
+      "name": "C T Land Development",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CWL",
+      "name": "Chrissworld",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "CWM",
+      "name": "C. W. Mackie",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "DFCC",
+      "name": "DFCC Bank",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "DIAL",
+      "name": "Dialog Axiata",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "DIMO",
+      "name": "Diesel & Motor Engineering",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "DIPD",
+      "name": "Dipped Products",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "DIST",
+      "name": "Distilleries Company of Sri Lanka",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "DOCK",
+      "name": "Colombo Dockyard",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "DPL",
+      "name": "Dankotuwa Porcelain",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "EAST",
+      "name": "East West Properties",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "EBCR",
+      "name": "E. B. Creasy & Company",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "ECL",
+      "name": "E-Channelling",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "EDEN",
+      "name": "Eden Hotel Lanka",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "ELPL",
+      "name": "Elpitiya Plantations",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "EMER",
+      "name": "Eastern Merchants",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "EML",
+      "name": "E M L Consultants",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "ETWO",
+      "name": "Equity Two",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "EXT",
+      "name": "Exterminators",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "FCT",
+      "name": "First Capital Treasuries",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "GEST",
+      "name": "Gestetner of Ceylon",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "GHLL",
+      "name": "Galadari Hotels (Lanka)",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "GLAS",
+      "name": "PGP Glass Ceylon",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "GRAN",
+      "name": "Ceylon Grain Elevators",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "GREG",
+      "name": "Ambeon Holdings",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "GUAR",
+      "name": "Ceylon Guardian Investment Trust",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "HAPU",
+      "name": "Hapugastenne Plantations",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "HASU",
+      "name": "HNB Assurance",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "HAYC",
+      "name": "Haycarb",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "HAYL",
+      "name": "Hayleys",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "HBS",
+      "name": "hSenid Business Solutions",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "HDFC",
+      "name": "HDFC Bank of Sri Lanka",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "HELA",
+      "name": "Hela Apparel Holdings",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "HEXP",
+      "name": "Hayleys Fibre",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "HHL",
+      "name": "Hemas Holdings",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "HNB",
+      "name": "Hatton National Bank",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "HNBF",
+      "name": "HNB Finance",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "HOPL",
+      "name": "Horana Plantations",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "HPFL",
+      "name": "Lotus Hydro Power",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "HPL",
+      "name": "Hatton Plantations",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "HPWR",
+      "name": "Resus Energy",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "HSIG",
+      "name": "Hotel Sigiriya",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "HUNA",
+      "name": "Hunas Holdings",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "HVA",
+      "name": "HVA Foods",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "JAT",
+      "name": "JAT Holdings",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "JETS",
+      "name": "Jetwing Symphony",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "JINS",
+      "name": "Janashakthi Insurance",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "JKH",
+      "name": "John Keells Holdings",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "JKL",
+      "name": "John Keells",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "KAHA",
+      "name": "Kahawatte Plantations",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "KCAB",
+      "name": "Kelani Cables",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "KFP",
+      "name": "Keells Food Products",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "KGAL",
+      "name": "Kegalle Plantations",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "KHC",
+      "name": "The Kandy Hotels Company (1938)",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "KHL",
+      "name": "John Keells Hotels",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "KOTA",
+      "name": "Kotagala Plantations",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "KPHL",
+      "name": "Kapruka Holdings",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "KVAL",
+      "name": "Kelani Valley Plantations",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "KZOO",
+      "name": "Shaw Wallace Investments",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "LALU",
+      "name": "Lanka Aluminium Industries",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "LCBF",
+      "name": "Lanka Credit & Business Finance",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "LCEY",
+      "name": "Lankem Ceylon",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "LDEV",
+      "name": "Lankem Developments",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "LFIN",
+      "name": "LB Finance",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "LGIL",
+      "name": "LOLC General Insurance",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "LGL",
+      "name": "LAUGFS Gas",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "LHCL",
+      "name": "The Lanka Hospitals Corporation",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "LHL",
+      "name": "The Lighthouse Hotel",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "LIOC",
+      "name": "Lanka IOC",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "LION",
+      "name": "Lion Brewery Ceylon",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "LITE",
+      "name": "Laxapana Batteries",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "LLUB",
+      "name": "Chevron Lubricants Lanka",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "LMF",
+      "name": "Lanka Milk Foods (CWE)",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "LOFC",
+      "name": "LOLC Finance",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "LOLC",
+      "name": "LOLC Holdings",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "LPL",
+      "name": "LAUGFS Power",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "LPRT",
+      "name": "Lake House Printers & Publishers",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "LUMX",
+      "name": "Luminex",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "LVEF",
+      "name": "LVL Energy Fund",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "LVEN",
+      "name": "Lanka Ventures",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "LWL",
+      "name": "Lanka Walltiles",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "MADU",
+      "name": "Madulsima Plantations",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "MAL",
+      "name": "Malwatte Valley Plantations",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "MARA",
+      "name": "Marawila Resorts",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "MASK",
+      "name": "Maskeliya Plantations",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "MBSL",
+      "name": "Merchant Bank of Sri Lanka & Finance",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "MCPL",
+      "name": "Mahaweli Coconut Plantations",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "MDL",
+      "name": "Myland Development",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "MEL",
+      "name": "Greentech Energy",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "MELS",
+      "name": "Melstacorp",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "MFPE",
+      "name": "Maharaja Foods",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "MGT",
+      "name": "Hayleys Fabric",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "MHDL",
+      "name": "Millennium Housing Developers",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "MRH",
+      "name": "Mahaweli Reach Hotels",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "MSL",
+      "name": "Mercantile Shipping Company",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "MULL",
+      "name": "Muller & Phipps (Ceylon)",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "NAMU",
+      "name": "Namunukula Plantations",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "NDB",
+      "name": "National Development Bank",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "NEH",
+      "name": "The Nuwara Eliya Hotels Company",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "NHL",
+      "name": "Nawaloka Hospitals",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "NTB",
+      "name": "Nations Trust Bank",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "ODEL",
+      "name": "Odel",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "OFEQ",
+      "name": "Office Equipment",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "ONAL",
+      "name": "On'ally Holdings",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "OSEA",
+      "name": "Overseas Realty (Ceylon)",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "PABC",
+      "name": "Pan Asia Banking Corporation",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "PACK",
+      "name": "Ex-pack Corrugated Cartons",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "PALM",
+      "name": "Palm Garden Hotels",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "PAP",
+      "name": "Panasian Power",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "PARA",
+      "name": "Paragon Ceylon",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "PARQ",
+      "name": "Swisstek (Ceylon)",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "PEG",
+      "name": "Pegasus Hotels of Ceylon",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "PHAR",
+      "name": "Colombo City Holdings",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "PINS",
+      "name": "People's Insurance",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "PKME",
+      "name": "Digital Mobility Solutions Lanka",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "PLC",
+      "name": "People's Leasing & Finance",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "PLR",
+      "name": "Prime Lands Residencies",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "PMB",
+      "name": "PMF Finance",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "RAL",
+      "name": "Renuka Agri Foods",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "RCH",
+      "name": "Renuka Hotels",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "RCL",
+      "name": "Royal Ceramics Lanka",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "REEF",
+      "name": "Citrus Leisure",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "RENU",
+      "name": "Renuka City Hotels",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "REXP",
+      "name": "Richard Pieris Exports",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "RFL",
+      "name": "Ramboda Falls",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "RGEM",
+      "name": "Radiant Gems International",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "RHL",
+      "name": "Renuka Holdings",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "RHTL",
+      "name": "The Fortress Resorts",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "RICH",
+      "name": "Richard Pieris and Company",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "RIL",
+      "name": "R I L Property",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "RPBH",
+      "name": "Royal Palms Beach Hotels",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "RWSL",
+      "name": "Raigam Wayamba Salterns",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "SAMP",
+      "name": "Sampath Bank",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "SCAP",
+      "name": "Softlogic Capital",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "SDB",
+      "name": "Sanasa Development Bank",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "SDF",
+      "name": "Sarvodaya Development Finance",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "SEMB",
+      "name": "SMB Finance",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "SERV",
+      "name": "The Kingsbury",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "SEYB",
+      "name": "Seylan Bank",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "SFIN",
+      "name": "Singer Finance (Lanka)",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "SHAW",
+      "name": "Lee Hedges",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "SHL",
+      "name": "Softlogic Holdings",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "SHOT",
+      "name": "Serendib Hotels",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "SIGV",
+      "name": "Sigiriya Village Hotels",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "SIL",
+      "name": "Samson International",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "SING",
+      "name": "Standard Capital",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "SINH",
+      "name": "Singhe Hospitals",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "SINS",
+      "name": "Singer (Sri Lanka)",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "SIRA",
+      "name": "Sierra Cables",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "SLTL",
+      "name": "Sri Lanka Telecom",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "SMOT",
+      "name": "Sathosa Motors",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "SOY",
+      "name": "Convenience Foods (Lanka)",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "SPEN",
+      "name": "Aitken Spence",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "STAF",
+      "name": "Dolphin Hotels",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "SUN",
+      "name": "Sunshine Holdings",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "TAFL",
+      "name": "Three Acre Farms",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "TAJ",
+      "name": "TAL Lanka Hotels",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "TANG",
+      "name": "Tangerine Beach Hotels",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "TAP",
+      "name": "Ambeon Capital",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "TESS",
+      "name": "Tess Agro",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "TILE",
+      "name": "Lanka Tiles",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "TJL",
+      "name": "Teejay Lanka",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "TKYO",
+      "name": "Tokyo Cement Company (Lanka)",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "TPL",
+      "name": "Talawakelle Tea Estates",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "TRAN",
+      "name": "Trans Asia Hotels",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "TSML",
+      "name": "Tea Smallholder Factories",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "TYRE",
+      "name": "Kelani Tyres",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "UAL",
+      "name": "Union Assurance",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "UBC",
+      "name": "Union Bank of Colombo",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "UBF",
+      "name": "UB Finance",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "UCAR",
+      "name": "Union Chemicals Lanka",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "UDPL",
+      "name": "Udapussellawa Plantations",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "UML",
+      "name": "United Motors Lanka",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "VFIN",
+      "name": "Vallibel Finance",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "VLL",
+      "name": "Vidullanka",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "VONE",
+      "name": "Vallibel One",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "VPEL",
+      "name": "Vallibel Power Erathna",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "WAPO",
+      "name": "Galle Face Capital Partners",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "WATA",
+      "name": "Watawala Plantations",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "WIND",
+      "name": "WindForce",
+      "sector": "Unknown"
+    },
+    {
+      "symbol": "YORK",
+      "name": "York Arcade Holdings",
+      "sector": "Unknown"
     }
   ]
 }

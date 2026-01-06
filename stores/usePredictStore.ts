@@ -1,5 +1,5 @@
 import { create } from "zustand"
-import type { PredictionResult } from "@/lib/fakeApi"
+import type { PredictionResult } from "@/lib/types/open-price-prediction.types"
 
 interface PredictInputs {
   symbol: string

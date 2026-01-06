@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import {
-  predictNextWeekOpen,
   getOhlcvSnapshot,
   type OhlcvSnapshot,
 } from "@/lib/fakeApi";
+import { predictOpenPrice } from "@/lib/api/open-price-prediction.api";
 import { usePredictStore } from "@/stores/usePredictStore";
 import { TickerSearch } from "@/components/ticker-search";
 import { ConfidenceBadge } from "@/components/confidence-badge";
@@ -93,17 +93,26 @@ export default function PredictPage() {
 
     setLoading(true);
     try {
-      // Get OHLCV snapshot
+      // Get OHLCV snapshot (still using mock data)
       const snap = await getOhlcvSnapshot(inputs.symbol);
       setSnapshot(snap);
 
-      // Run prediction
-      const result = await predictNextWeekOpen(inputs.symbol);
+      // Run prediction using API
+      const result = await predictOpenPrice(inputs.symbol);
       setOutput(result);
-    } catch (error) {
+
       toast({
-        title: "Error",
-        description: "Failed to generate prediction",
+        title: "Success",
+        description: `Prediction generated for ${inputs.symbol}`,
+      });
+    } catch (error) {
+      const errorMessage = error instanceof Error
+        ? error.message
+        : "Failed to generate prediction";
+
+      toast({
+        title: "Prediction Failed",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
