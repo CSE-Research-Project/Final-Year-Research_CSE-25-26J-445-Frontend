@@ -18,6 +18,7 @@ export function TickerSearch({ onSelect, placeholder = "Search stocks..." }: Tic
   const [companies, setCompanies] = useState<Company[]>([])
   const [loading, setLoading] = useState(false)
   const [query, setQuery] = useState("")
+  const [selectedCompany, setSelectedCompany] = useState<Company | null>(null)
 
   // companies to show when search is empty
   const exampleCompanies: Company[] = [
@@ -45,7 +46,15 @@ export function TickerSearch({ onSelect, placeholder = "Search stocks..." }: Tic
   }, [query])
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover
+      open={open}
+      onOpenChange={(isOpen) => {
+        setOpen(isOpen)
+        if (isOpen) {
+          setQuery("")
+        }
+      }}
+    >
       <PopoverTrigger asChild>
         <Button
           variant="outline"
@@ -53,7 +62,10 @@ export function TickerSearch({ onSelect, placeholder = "Search stocks..." }: Tic
           aria-expanded={open}
           className="w-full justify-between bg-transparent"
         >
-          {query || placeholder}
+          {selectedCompany
+            ? `${selectedCompany.symbol} - ${selectedCompany.name}`
+            : placeholder
+          }
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -75,6 +87,7 @@ export function TickerSearch({ onSelect, placeholder = "Search stocks..." }: Tic
                     key={company.symbol}
                     value={company.symbol}
                     onSelect={() => {
+                      setSelectedCompany(company)
                       onSelect(company)
                       setQuery("")
                       setOpen(false)
